@@ -1,0 +1,24 @@
+package main
+
+import (
+	"microservicio/capaAccesoADatos/repository"
+	controller "microservicio/capaControladores"
+	service "microservicio/capaFachadaServices"
+
+	"github.com/gin-gonic/gin"
+)
+
+func main() {
+
+	audioRepositry := repository.NewMetadataAudioRepository()
+	audioService := service.NewMetadataAudioService(audioRepositry)
+	audioController := controller.NewMetadataAudioController(audioService)
+
+	router := gin.Default()
+
+	router.POST("/audios", audioController.RegistrarAudio)
+	router.GET("/audios/:titulo", audioController.ConsultarAudio)
+
+	router.Run(":8080")
+
+}
