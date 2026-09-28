@@ -59,3 +59,20 @@ func (this *MetadataAudioService) ConsultarAudio(titulo string) dto.RespuestaMet
 
 	return respuesta
 }
+
+//Obtener AudiosPorTipo retorna todo el vector de audios almacenados
+func (this *MetadataAudioService) ObtenerAudiosPorTipo(tipo string) dto.RespuestaAudiosPorTipoDTO{
+	var respuesta dto.RespuestaAudiosPorTipoDTO
+	vecAudios := this.service.ObtenerAudiosPorTipo(tipo)
+	if vecAudios {
+		respuesta.VectorAudiosPorTipo = vecAudios
+		respuesta.Codigo = 200
+		respuesta.Mensaje = "Audios del tipo buscado encontrados"
+	}
+	else{
+		respuesta.Codigo = 400
+		respuesta.Mensaje = "No se encontraron audios del tipo buscado"
+	}
+
+	return respuesta
+}

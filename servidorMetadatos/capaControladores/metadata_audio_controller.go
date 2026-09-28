@@ -52,3 +52,14 @@ func (this *MetadataAudioController) ConsultarAudio(ctx *gin.Context) {
 	respuesta := this.service.ConsultarAudio(titulo)
 	ctx.JSON(respuesta.Codigo, respuesta)
 }
+
+
+// ObtenerTodos - GET /audios/:tipo
+// Consulta todos los audios y responde con el código HTTP definido
+// por la fachada (200 si se encontró, 401 si no)
+
+func (this *MetadataAudioController) ConsultarTodos(ctx *gin.Context){
+	tipo := ctx.Param("tipo")
+	respuesta := this.service.ObtenerAudiosPorTipo(tipo)
+	ctx.JSON(respuesta.Codigo, respuesta)
+}

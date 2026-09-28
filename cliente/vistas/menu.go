@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"net/http"
 
 	util "cliente.local/grpc-cliente/utilidades"
 	pb "servidorStreaming.local/grpc-servidor/serviciosAudio"
@@ -43,11 +44,96 @@ func RecibirAudioAReproducir(client pb.AudioServiceClient, ctx context.Context) 
 }
 
 /*
-Fachada para pedirle al servidor de metadatos los audios disponibles para un determinado tipo
+Fachada REST para pedirle al servidor de metadatos los audios
+disponibles para un determinado tipo y mostrar sus títulos.
 */
-func MostrarAudiosPorTipo(tipo string, client pb.AudioServiceClient, ctx context.Context) {
+func MostrarAudiosPorTipo(tipo string, ctx context.Context) {
 
+	// Escapar el tipo para poder utilizarlo correctamente
+	// como parámetro de la URL.
+	tipoEscapado := url.PathEscape(tipo)
+
+	serverURL := fmt.Sprintf(
+		"http://localhost:8080/audios/%s",
+		tipoEscapado,
+	)
+
+	// Crear cliente HTTP.
+	httpClient := &http.Client{}
+
+	// Crear la petición GET asociada al contexto recibido.
+	req, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodGet,
+		serverURL,
+		nil,
+	)
+	if err != nil {
+		fmt.Printf("Error al crear la petición HTTP: %v\n", err)
+		return
+	}
+
+	// Realizar la petición REST.
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		fmt.Printf("Error al conectar con el servidor de metadatos: %v\n", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	// El servidor indica que no se encontraron audios.
+	if resp.StatusCode == http.StatusUnauthorized {
+		fmt.Printf(
+			"No se encontraron audios para el tipo '%s'.\n",
+			tipo,
+		)
+		return
+	}
+
+	// Cualquier código diferente de 200 se considera
+	// una respuesta no exitosa.
+	if resp.StatusCode != http.StatusOK {
+		fmt.Printf(
+			"Error al consultar los audios. Código HTTP: %d\n",
+			resp.StatusCode,
+		)
+		return
+	}
+
+	// DTO que representa exactamente la respuesta del servidor REST.
+	var respuesta RespuestaAudiosPorTipoDTO
+
+	// Convertir el JSON recibido a una estructura Go.
+	err = json.NewDecoder(resp.Body).Decode(&respuesta)
+	if err != nil {
+		fmt.Printf(
+			"Error al interpretar la respuesta JSON: %v\n",
+			err,
+		)
+		return
+	}
+
+	fmt.Printf("\n%s\n", respuesta.Mensaje)
+
+	// Verificar si existen audios.
+	if len(respuesta.VectorAudiosPorTipo) == 0 {
+		fmt.Printf(
+			"No hay audios disponibles para el tipo '%s'.\n",
+			tipo,
+		)
+		return
+	}
+
+	// Mostrar únicamente los títulos.
+	fmt.Printf("\nAudios disponibles de tipo '%s':\n", tipo)
+
+	for _, audio := range respuesta.VectorAudiosPorTipo {
+		fmt.Printf("- %s\n", audio.Titulo)
+	}
+
+	fmt.Println()
 }
+
 
 /*
 Mostrar un menu de tipos de audio que hay disponibles
@@ -69,10 +155,13 @@ func MostrarMenuDeTipos(client pb.AudioServiceClient, ctx context.Context) {
 
 		switch opcion {
 		case "1":
-			MostrarAudiosPorTipo(ti)
+			MostrarAudiosPorTipo("canciones", client, ctx)
 		case "2":
+			MostrarAudiosPorTipo("Audiolibros", client, ctx)
 		case "3":
+			MostrarAudiosPorTipo("Ruido Blanco", client, ctx)
 		case "4":
+			MostrarAudiosPorTipo("Podcast", client, ctx)
 		case "5":
 			bandera = false
 		default:
