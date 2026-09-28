@@ -3,12 +3,16 @@ package vistas
 import (
 	"bufio"
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
+	"net/http"
+	"net/url"
 	"os"
 	"strings"
-	"net/http"
+
+	"cliente.local/grpc-cliente/dtos"
 
 	util "cliente.local/grpc-cliente/utilidades"
 	pb "servidorStreaming.local/grpc-servidor/serviciosAudio"
@@ -101,7 +105,7 @@ func MostrarAudiosPorTipo(tipo string, ctx context.Context) {
 	}
 
 	// DTO que representa exactamente la respuesta del servidor REST.
-	var respuesta RespuestaAudiosPorTipoDTO
+	var respuesta dtos.RespuestaAudiosPorTipoDTO
 
 	// Convertir el JSON recibido a una estructura Go.
 	err = json.NewDecoder(resp.Body).Decode(&respuesta)
@@ -134,7 +138,6 @@ func MostrarAudiosPorTipo(tipo string, ctx context.Context) {
 	fmt.Println()
 }
 
-
 /*
 Mostrar un menu de tipos de audio que hay disponibles
 */
@@ -155,13 +158,13 @@ func MostrarMenuDeTipos(client pb.AudioServiceClient, ctx context.Context) {
 
 		switch opcion {
 		case "1":
-			MostrarAudiosPorTipo("canciones", client, ctx)
+			MostrarAudiosPorTipo("canciones", ctx)
 		case "2":
-			MostrarAudiosPorTipo("Audiolibros", client, ctx)
+			MostrarAudiosPorTipo("Audiolibros", ctx)
 		case "3":
-			MostrarAudiosPorTipo("Ruido Blanco", client, ctx)
+			MostrarAudiosPorTipo("Ruido Blanco", ctx)
 		case "4":
-			MostrarAudiosPorTipo("Podcast", client, ctx)
+			MostrarAudiosPorTipo("Podcast", ctx)
 		case "5":
 			bandera = false
 		default:

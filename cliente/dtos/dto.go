@@ -1,4 +1,4 @@
-package DTO
+package dtos
 
 // MetadataAudioDTO es el objeto de transferencia de datos que se recibe al
 // registrar un audio y que se devuelve dentro de la respuesta de consulta.
@@ -13,7 +13,7 @@ type MetadataAudioDTO struct {
 // RespuestaAudiosPorTipoDTO es el DTO para obtener todos los metadados de los audios que
 // pertenecen a un determinado tipo
 type RespuestaAudiosPorTipoDTO struct {
-	VectorAudiosPorTipo []MetadataAudioDTO	`json:"vectorAudiosPorTipo"`
-	Codigo 				int 				`json:"Codigo"`
-	Mensaje 			string 				`json:"Mensaje"`
+	VectorAudiosPorTipo []MetadataAudioDTO `json:"vectorAudiosPorTipo"`
+	Codigo              int                `json:"Codigo"`
+	Mensaje             string             `json:"Mensaje"`
 }
