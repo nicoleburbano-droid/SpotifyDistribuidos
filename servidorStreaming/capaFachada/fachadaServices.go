@@ -7,6 +7,7 @@ import (
 	"os"
 
 	capaaccesodatos "servidor.local/grpc-servidor/capaAccesoDatos"
+	componenteconexioncola "servidor.local/grpc-servidor/capaFachada/ComponenteConexionCola"
 	pb "servidor.local/grpc-servidor/serviciosAudio"
 )
 
@@ -19,7 +20,7 @@ func abrirArchivo(titulo string) (*os.File, error) {
 
 // EnviarFragmentosAudio lee el archivo de la canción en chunks y los envía al stream gRPC.
 // Esta función encapsula la lógica de lectura y envío para mantener el servidor limpio.
-func EnviarFragmentosAudio(titulo string, stream pb.AudioService_AudioStreamServer) error {
+func EnviarFragmentosAudio(titulo string, stream pb.AudioService_AudioStreamServer, publisher *componenteconexioncola.RabbitPublisher) error {
 	log.Printf("Enviando fragmentos de audio para titulo=%s", titulo)
 	file, err := abrirArchivo(titulo)
 	if err != nil {
@@ -52,6 +53,16 @@ func EnviarFragmentosAudio(titulo string, stream pb.AudioService_AudioStreamServ
 				return fmt.Errorf("Error enviando chunk #%d: %w", chunkNum, err)
 			}
 			log.Printf("Chunk #%d enviado (%d bytes)\n", chunkNum, n)
+		}
+	}
+
+	if publisher != nil {
+		err := publisher.PublicarNotificacion(componenteconexioncola.NotificacionCancion{
+			Titulo:  titulo,
+			Mensaje: "La canción se está reproduciendo",
+		})
+		if err != nil {
+			log.Printf("No se pudo notificar la reproducción de %q a RabbitMQ: %v", titulo, err)
 		}
 	}
 
