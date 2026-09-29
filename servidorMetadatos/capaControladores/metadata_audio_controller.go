@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	service "microservicio/capaFachadaServices"
@@ -23,6 +24,7 @@ func NewMetadataAudioController(service *service.MetadataAudioService) *Metadata
 // Recibe un MetadataAudioDTO en el body y lo registra a través de la
 // fachada de servicios.
 func (this *MetadataAudioController) RegistrarAudio(ctx *gin.Context) {
+	fmt.Printf("[REST] POST /audios: solicitud para registrar audio general\n")
 	var audioDTO dto.MetadataAudioDTO
 
 	if err := ctx.ShouldBindJSON(&audioDTO); err != nil {
@@ -45,6 +47,7 @@ func (this *MetadataAudioController) RegistrarAudio(ctx *gin.Context) {
 
 // TODO registrarMusica
 func (this *MetadataAudioController) RegistrarMusica(ctx *gin.Context) {
+	fmt.Printf("[REST] POST /musica: solicitud para registrar música\n")
 	var musicaDTO dto.MetadataMusicaDTO
 	if err := ctx.ShouldBindJSON(&musicaDTO); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"codigo": http.StatusBadRequest, "mensaje": "Los datos de la música son inválidos: " + err.Error()})
@@ -56,6 +59,7 @@ func (this *MetadataAudioController) RegistrarMusica(ctx *gin.Context) {
 
 // TODO registrarAudioLibro
 func (this *MetadataAudioController) RegistrarAudioLibro(ctx *gin.Context) {
+	fmt.Printf("[REST] POST /audiolibros: solicitud para registrar audiolibro\n")
 	var libroDTO dto.MetadataAudioLibrosDTO
 	if err := ctx.ShouldBindJSON(&libroDTO); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"codigo": http.StatusBadRequest, "mensaje": "Los datos del audiolibro son inválidos: " + err.Error()})
@@ -67,6 +71,7 @@ func (this *MetadataAudioController) RegistrarAudioLibro(ctx *gin.Context) {
 
 // TODO registrarPodcast
 func (this *MetadataAudioController) RegistrarPodcast(ctx *gin.Context) {
+	fmt.Printf("[REST] POST /podcasts: solicitud para registrar podcast\n")
 	var podcastDTO dto.MetadataPodcastDTO
 	if err := ctx.ShouldBindJSON(&podcastDTO); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"codigo": http.StatusBadRequest, "mensaje": "Los datos del podcast son inválidos: " + err.Error()})
@@ -78,6 +83,7 @@ func (this *MetadataAudioController) RegistrarPodcast(ctx *gin.Context) {
 
 // TODO registrarRuidoBlanco
 func (this *MetadataAudioController) RegistrarRuidoBlanco(ctx *gin.Context) {
+	fmt.Printf("[REST] POST /ruido-blanco: solicitud para registrar ruido blanco\n")
 	var ruidoDTO dto.MetadataRuidoBlancoDTO
 	if err := ctx.ShouldBindJSON(&ruidoDTO); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"codigo": http.StatusBadRequest, "mensaje": "Los datos del ruido blanco son inválidos: " + err.Error()})
@@ -93,31 +99,40 @@ func (this *MetadataAudioController) RegistrarRuidoBlanco(ctx *gin.Context) {
 
 func (this *MetadataAudioController) ConsultarAudio(ctx *gin.Context) {
 	titulo := ctx.Param("titulo")
+	fmt.Printf("[REST] GET /audios/titulo/%s: consulta de audio\n", titulo)
 	respuesta := this.service.ConsultarAudio(titulo)
 	ctx.JSON(respuesta.Codigo, respuesta)
 }
 
 // TODO ConsultarMusica
 func (this *MetadataAudioController) ConsultarMusica(ctx *gin.Context) {
-	respuesta := this.service.ConsultarMusica(ctx.Param("titulo"))
+	titulo := ctx.Param("titulo")
+	fmt.Printf("[REST] GET /musica/titulo/%s: consulta de música\n", titulo)
+	respuesta := this.service.ConsultarMusica(titulo)
 	ctx.JSON(respuesta.Codigo, respuesta)
 }
 
 // TODO ConsultarAudioLibro
 func (this *MetadataAudioController) ConsultarAudioLibro(ctx *gin.Context) {
-	respuesta := this.service.ConsultarAudioLibro(ctx.Param("titulo"))
+	titulo := ctx.Param("titulo")
+	fmt.Printf("[REST] GET /audiolibros/titulo/%s: consulta de audiolibro\n", titulo)
+	respuesta := this.service.ConsultarAudioLibro(titulo)
 	ctx.JSON(respuesta.Codigo, respuesta)
 }
 
 // TODO ConsultarPodcast
 func (this *MetadataAudioController) ConsultarPodcast(ctx *gin.Context) {
-	respuesta := this.service.ConsultarPodcast(ctx.Param("titulo"))
+	titulo := ctx.Param("titulo")
+	fmt.Printf("[REST] GET /podcasts/titulo/%s: consulta de podcast\n", titulo)
+	respuesta := this.service.ConsultarPodcast(titulo)
 	ctx.JSON(respuesta.Codigo, respuesta)
 }
 
 // TODO ConsultarRuidoBlanco
 func (this *MetadataAudioController) ConsultarRuidoBlanco(ctx *gin.Context) {
-	respuesta := this.service.ConsultarRuidoBlanco(ctx.Param("tipoSonido"))
+	tipoSonido := ctx.Param("tipoSonido")
+	fmt.Printf("[REST] GET /ruido-blanco/tipo/%s: consulta de ruido blanco\n", tipoSonido)
+	respuesta := this.service.ConsultarRuidoBlanco(tipoSonido)
 	ctx.JSON(respuesta.Codigo, respuesta)
 }
 
@@ -127,35 +142,41 @@ func (this *MetadataAudioController) ConsultarRuidoBlanco(ctx *gin.Context) {
 
 func (this *MetadataAudioController) ConsultarAudiosPorTipo(ctx *gin.Context) {
 	tipo := ctx.Param("tipo")
+	fmt.Printf("[REST] GET /audios/tipo/%s: consulta de audios por tipo\n", tipo)
 	respuesta := this.service.ObtenerAudiosPorTipo(tipo)
 	ctx.JSON(respuesta.Codigo, respuesta)
 }
 
 // TODO ObtenerMusica
 func (this *MetadataAudioController) ObtenerMusica(ctx *gin.Context) {
+	fmt.Printf("[REST] GET /musica/all: consulta de toda la música\n")
 	respuesta := this.service.ObtenerMusica()
 	ctx.JSON(respuesta.Codigo, respuesta)
 }
 
 // TODO ObtenerAudioLibros
 func (this *MetadataAudioController) ObtenerAudioLibros(ctx *gin.Context) {
+	fmt.Printf("[REST] GET /audiolibros/all: consulta de todos los audiolibros\n")
 	respuesta := this.service.ObtenerAudioLibros()
 	ctx.JSON(respuesta.Codigo, respuesta)
 }
 
 // TODO ObtenerPodcast
 func (this *MetadataAudioController) ObtenerPodcast(ctx *gin.Context) {
+	fmt.Printf("[REST] GET /podcasts/all: consulta de todos los podcasts\n")
 	respuesta := this.service.ObtenerPodcast()
 	ctx.JSON(respuesta.Codigo, respuesta)
 }
 
 // TODO ObtenerRuidoBlanco
 func (this *MetadataAudioController) ObtenerRuidoBlanco(ctx *gin.Context) {
+	fmt.Printf("[REST] GET /ruido-blanco/all: consulta de todos los ruidos blancos\n")
 	respuesta := this.service.ObtenerRuidoBlanco()
 	ctx.JSON(respuesta.Codigo, respuesta)
 }
 
 // TODO ObtenerTiposDeAudio
 func (this *MetadataAudioController) ObtenerTiposDeAudio(ctx *gin.Context) {
+	fmt.Printf("[REST] GET /tipos-audio: consulta de tipos de audio disponibles\n")
 	ctx.JSON(http.StatusOK, this.service.ObtenerTiposDeAudio())
 }
