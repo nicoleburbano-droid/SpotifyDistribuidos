@@ -49,11 +49,11 @@ disponibles para un determinado tipo y mostrar sus títulos.
 func MostrarMusica(ctx context.Context, client pb.AudioServiceClient) {
 
 	VectorAudios := util.SolicitarMusica(ctx)
-	
+
 	// Menu de audios disponibles
 	bandera := true
 	for bandera {
-	// Mostrar únicamente los títulos.
+		// Mostrar únicamente los títulos.
 		fmt.Printf("\nAudios disponibles de Musica:\n")
 
 		i := 0
@@ -76,12 +76,12 @@ func MostrarMusica(ctx context.Context, client pb.AudioServiceClient) {
 		}
 
 		// mostrar los metadatos del audio seleccionado
-		if (numero > len(VectorAudios)+1 || numero < 1){
+		if numero > len(VectorAudios)+1 || numero < 1 {
 			fmt.Println("La opcion ingresada no es valida")
-		}else if (numero == len(VectorAudios)+1){
+		} else if numero == len(VectorAudios)+1 {
 			bandera = false
-		}else{
-			fmt.Printf("\nRecurso: %s\n",VectorAudios[numero-1].TituloCancion)
+		} else {
+			fmt.Printf("\nRecurso: %s\n", VectorAudios[numero-1].TituloCancion)
 			fmt.Printf("\nTitulo: %s", VectorAudios[numero-1].TituloCancion)
 			fmt.Printf("\nAlbum: %s", VectorAudios[numero-1].Album)
 			fmt.Printf("\nAño Lanzamiento: %s", VectorAudios[numero-1].AnioLanzamiento)
@@ -99,27 +99,26 @@ func MostrarMusica(ctx context.Context, client pb.AudioServiceClient) {
 
 			switch reproducir {
 			case "1":
-				RecibirAudioAReproducir(client, ctx, VectorAudios[numero-1].TituloCancion)
+				RecibirAudioAReproducir(client, ctx, VectorAudios[numero-1].TituloCancion+".mp3")
 			case "2":
 				bandera = false
 			default:
 				fmt.Printf("La opcion seleccionada no es valida")
 			}
 		}
-	}	
+	}
 
 	fmt.Println()
 }
 
-
 func MostrarAudiolibros(ctx context.Context, client pb.AudioServiceClient) {
 
 	VectorAudios := util.SolicitarAudioLibros(ctx)
-	
+
 	// Menu de audios disponibles
 	bandera := true
 	for bandera {
-	// Mostrar únicamente los títulos.
+		// Mostrar únicamente los títulos.
 		fmt.Printf("\nAudios disponibles de Audio Libros:\n")
 
 		i := 0
@@ -142,12 +141,12 @@ func MostrarAudiolibros(ctx context.Context, client pb.AudioServiceClient) {
 		}
 
 		// mostrar los metadatos del audio seleccionado
-		if (numero > len(VectorAudios)+1 || numero < 1){
+		if numero > len(VectorAudios)+1 || numero < 1 {
 			fmt.Println("La opcion ingresada no es valida")
-		}else if (numero == len(VectorAudios)+1){
+		} else if numero == len(VectorAudios)+1 {
 			bandera = false
-		}else{
-			fmt.Printf("\nRecurso: %s \n",VectorAudios[numero-1].TituloLibro)
+		} else {
+			fmt.Printf("\nRecurso: %s \n", VectorAudios[numero-1].TituloLibro)
 			fmt.Printf("\nTitulo: %s", VectorAudios[numero-1].TituloLibro)
 			fmt.Printf("\nAutor: %s", VectorAudios[numero-1].Autor)
 			fmt.Printf("\nEditorial: %s", VectorAudios[numero-1].Editorial)
@@ -165,25 +164,25 @@ func MostrarAudiolibros(ctx context.Context, client pb.AudioServiceClient) {
 
 			switch reproducir {
 			case "1":
-				RecibirAudioAReproducir(client, ctx, VectorAudios[numero-1].TituloLibro)
+				RecibirAudioAReproducir(client, ctx, VectorAudios[numero-1].TituloLibro+".mp3")
 			case "2":
 				bandera = false
 			default:
 				fmt.Printf("La opcion seleccionada no es valida")
 			}
 		}
-	}	
+	}
 
 	fmt.Println()
 }
 
-func MostrarPodcast(ctx context.Context, client pb.AudioServiceClient){
+func MostrarPodcast(ctx context.Context, client pb.AudioServiceClient) {
 	VectorAudios := util.SolicitarPodcast(ctx)
-	
+
 	// Menu de audios disponibles
 	bandera := true
 	for bandera {
-	// Mostrar únicamente los títulos.
+		// Mostrar únicamente los títulos.
 		fmt.Printf("\nAudios disponibles de Podcast:\n")
 
 		i := 0
@@ -206,12 +205,12 @@ func MostrarPodcast(ctx context.Context, client pb.AudioServiceClient){
 		}
 
 		// mostrar los metadatos del audio seleccionado
-		if (numero > len(VectorAudios)+1 || numero < 1){
+		if numero > len(VectorAudios)+1 || numero < 1 {
 			fmt.Println("La opcion ingresada no es valida")
-		}else if (numero == len(VectorAudios)+1){
+		} else if numero == len(VectorAudios)+1 {
 			bandera = false
-		}else{
-			fmt.Printf("\nRecurso: %s\n",VectorAudios[numero-1].NombrePodcast)
+		} else {
+			fmt.Printf("\nRecurso: %s\n", VectorAudios[numero-1].NombrePodcast)
 			fmt.Printf("\nNombre Podcast: %s", VectorAudios[numero-1].NombrePodcast)
 			fmt.Printf("\nAnfitrion: %s", VectorAudios[numero-1].Anfitrion)
 			fmt.Printf("\nClasificacion: %s", VectorAudios[numero-1].ClasificacionContenido)
@@ -229,26 +228,25 @@ func MostrarPodcast(ctx context.Context, client pb.AudioServiceClient){
 
 			switch reproducir {
 			case "1":
-				RecibirAudioAReproducir(client, ctx, VectorAudios[numero-1].NombrePodcast)
+				RecibirAudioAReproducir(client, ctx, VectorAudios[numero-1].NombrePodcast+".mp3")
 			case "2":
 				bandera = false
 			default:
 				fmt.Printf("La opcion seleccionada no es valida")
 			}
 		}
-	}	
+	}
 
 	fmt.Println()
 }
 
-
-func MostrarRuidoBlanco(ctx context.Context, client pb.AudioServiceClient){
+func MostrarRuidoBlanco(ctx context.Context, client pb.AudioServiceClient) {
 	VectorAudios := util.SolicitarRuidoBlanco(ctx)
-	
+
 	// Menu de audios disponibles
 	bandera := true
 	for bandera {
-	// Mostrar únicamente los títulos.
+		// Mostrar únicamente los títulos.
 		fmt.Printf("\nAudios disponibles de Ruido Blanco:\n")
 
 		i := 0
@@ -271,12 +269,12 @@ func MostrarRuidoBlanco(ctx context.Context, client pb.AudioServiceClient){
 		}
 
 		// mostrar los metadatos del audio seleccionado
-		if (numero > len(VectorAudios)+1 || numero < 1){
+		if numero > len(VectorAudios)+1 || numero < 1 {
 			fmt.Println("La opcion ingresada no es valida")
-		}else if (numero == len(VectorAudios)+1){
+		} else if numero == len(VectorAudios)+1 {
 			bandera = false
-		}else{
-			fmt.Printf("\nRecurso: %s\n",VectorAudios[numero-1].TipoSonido)
+		} else {
+			fmt.Printf("\nRecurso: %s\n", VectorAudios[numero-1].TipoSonido)
 			fmt.Printf("\nSonido: %s", VectorAudios[numero-1].TipoSonido)
 			fmt.Printf("\nFrecuencia: %s", VectorAudios[numero-1].FrecuenciaDominante)
 			fmt.Printf("\nFuente de Audio: %s", VectorAudios[numero-1].FuenteAudio)
@@ -294,18 +292,17 @@ func MostrarRuidoBlanco(ctx context.Context, client pb.AudioServiceClient){
 
 			switch reproducir {
 			case "1":
-				RecibirAudioAReproducir(client, ctx, VectorAudios[numero-1].TipoSonido)
+				RecibirAudioAReproducir(client, ctx, VectorAudios[numero-1].TipoSonido+".mp3")
 			case "2":
 				bandera = false
 			default:
 				fmt.Printf("La opcion seleccionada no es valida")
 			}
 		}
-	}	
+	}
 
 	fmt.Println()
 }
-
 
 /*
 Mostrar un menu de tipos de audio que hay disponibles
