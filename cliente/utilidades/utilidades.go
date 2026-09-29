@@ -1,14 +1,15 @@
 package utilidades
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
-	"time"
-	"context"
-	"encoding/json"
 	"net/http"
 	"net/url"
+	"time"
+
 	"cliente.local/grpc-cliente/dtos"
 
 	"github.com/faiface/beep"
@@ -48,7 +49,7 @@ func RecibirAudio(
 			log.Fatalf("Error recibiendo chunk: %v", err)
 		}
 		noFragmento++
-		fmt.Printf("\n Fragmento #%d recibido (%d bytes) reproduciendo ...", noFragmento, len(fragmento.Data))
+		//fmt.Printf("\n Fragmento #%d recibido (%d bytes) reproduciendo ...", noFragmento, len(fragmento.Data))
 
 		if _, err := writer.Write(fragmento.Data); err != nil {
 			log.Printf("Error escribiendo en pipe: %v", err)
@@ -139,8 +140,8 @@ func SolicitarMetadata(tipo string, ctx context.Context) []dtos.MetadataAudioDTO
 	return respuesta.VectorAudiosPorTipo
 }
 
-func SolicitarTiposAudio(ctx context.Context) []dtos.TipoAudioDTO{
-	
+func SolicitarTiposAudio(ctx context.Context) []dtos.TipoAudioDTO {
+
 	serverURL := "http://localhost:8080/tipos-audio"
 
 	// Crear cliente HTTP.
@@ -208,7 +209,7 @@ func SolicitarTiposAudio(ctx context.Context) []dtos.TipoAudioDTO{
 	return respuesta
 }
 
-func SolicitarMusica(ctx context.Context) []dtos.MetadataMusicaDTO{
+func SolicitarMusica(ctx context.Context) []dtos.MetadataMusicaDTO {
 	serverURL := "http://localhost:8080/musica/all"
 
 	// Crear cliente HTTP.
@@ -276,7 +277,7 @@ func SolicitarMusica(ctx context.Context) []dtos.MetadataMusicaDTO{
 	return respuesta.VectorMusica
 }
 
-func SolicitarAudioLibros(ctx context.Context) []dtos.MetadataAudioLibrosDTO{
+func SolicitarAudioLibros(ctx context.Context) []dtos.MetadataAudioLibrosDTO {
 	serverURL := "http://localhost:8080/audiolibros/all"
 
 	// Crear cliente HTTP.
@@ -344,7 +345,7 @@ func SolicitarAudioLibros(ctx context.Context) []dtos.MetadataAudioLibrosDTO{
 	return respuesta.VectorAudioLibros
 }
 
-func SolicitarPodcast(ctx context.Context) []dtos.MetadataPodcastDTO{
+func SolicitarPodcast(ctx context.Context) []dtos.MetadataPodcastDTO {
 	serverURL := "http://localhost:8080/podcasts/all"
 
 	// Crear cliente HTTP.
@@ -412,8 +413,7 @@ func SolicitarPodcast(ctx context.Context) []dtos.MetadataPodcastDTO{
 	return respuesta.VectorPodcast
 }
 
-
-func SolicitarRuidoBlanco(ctx context.Context) []dtos.MetadataRuidoBlancoDTO{
+func SolicitarRuidoBlanco(ctx context.Context) []dtos.MetadataRuidoBlancoDTO {
 	serverURL := "http://localhost:8080/ruido-blanco/all"
 
 	// Crear cliente HTTP.

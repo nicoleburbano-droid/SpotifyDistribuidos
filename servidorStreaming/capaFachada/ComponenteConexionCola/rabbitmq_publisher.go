@@ -22,7 +22,7 @@ type NotificacionCancion struct {
 func NewRabbitPublisher() (*RabbitPublisher, error) {
 	url := os.Getenv("RABBITMQ_URL")
 	if url == "" {
-		url = "amqp://admin:1234@10.150.10.73/"
+		url = "amqp://admin:1234@10.250.59.156/"
 	}
 
 	conn, err := amqp.Dial(url)
