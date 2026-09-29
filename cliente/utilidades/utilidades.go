@@ -138,3 +138,345 @@ func SolicitarMetadata(tipo string, ctx context.Context) []dtos.MetadataAudioDTO
 
 	return respuesta.VectorAudiosPorTipo
 }
+
+func SolicitarTiposAudio(ctx context.Context) []dtos.TipoAudioDTO{
+	
+	serverURL := "http://localhost:8080/tipos-audio"
+
+	// Crear cliente HTTP.
+	httpClient := &http.Client{}
+
+	// Crear la petición GET asociada al contexto recibido.
+	req, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodGet,
+		serverURL,
+		nil,
+	)
+	if err != nil {
+		fmt.Printf("Error al crear la petición HTTP: %v\n", err)
+		return nil
+	}
+
+	// Realizar la petición REST.
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		fmt.Printf("Error al conectar con el servidor de metadatos: %v\n", err)
+		return nil
+	}
+	defer resp.Body.Close()
+
+	// El servidor indica que no se encontraron audios.
+	if resp.StatusCode == http.StatusBadRequest {
+		fmt.Printf(
+			"No se encontraron tipos de audios.\n",
+		)
+		return nil
+	}
+
+	// Cualquier código diferente de 200 se considera
+	// una respuesta no exitosa.
+	if resp.StatusCode != http.StatusOK {
+		fmt.Printf(
+			"Error al consultar los tipos de audios. Código HTTP: %d\n",
+			resp.StatusCode,
+		)
+		return nil
+	}
+
+	// DTO que representa exactamente la respuesta del servidor REST.
+	var respuesta []dtos.TipoAudioDTO
+
+	// Convertir el JSON recibido a una estructura Go.
+	err = json.NewDecoder(resp.Body).Decode(&respuesta)
+	if err != nil {
+		fmt.Printf(
+			"Error al interpretar la respuesta JSON: %v\n",
+			err,
+		)
+		return nil
+	}
+
+	// Verificar si existen audios.
+	if len(respuesta) == 0 {
+		fmt.Printf(
+			"No hay tipos de audios disponibles.\n",
+		)
+		return nil
+	}
+
+	return respuesta
+}
+
+func SolicitarMusica(ctx context.Context) []dtos.MetadataMusicaDTO{
+	serverURL := "http://localhost:8080/musica/all"
+
+	// Crear cliente HTTP.
+	httpClient := &http.Client{}
+
+	// Crear la petición GET asociada al contexto recibido.
+	req, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodGet,
+		serverURL,
+		nil,
+	)
+	if err != nil {
+		fmt.Printf("Error al crear la petición HTTP: %v\n", err)
+		return nil
+	}
+
+	// Realizar la petición REST.
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		fmt.Printf("Error al conectar con el servidor de metadatos: %v\n", err)
+		return nil
+	}
+	defer resp.Body.Close()
+
+	// El servidor indica que no se encontraron audios.
+	if resp.StatusCode == http.StatusBadRequest {
+		fmt.Printf(
+			"No se encontro musica.\n",
+		)
+		return nil
+	}
+
+	// Cualquier código diferente de 200 se considera
+	// una respuesta no exitosa.
+	if resp.StatusCode != http.StatusOK {
+		fmt.Printf(
+			"Error al consultar la musica. Código HTTP: %d\n",
+			resp.StatusCode,
+		)
+		return nil
+	}
+
+	// DTO que representa exactamente la respuesta del servidor REST.
+	var respuesta dtos.RespuestaMusicaDTO
+
+	// Convertir el JSON recibido a una estructura Go.
+	err = json.NewDecoder(resp.Body).Decode(&respuesta)
+	if err != nil {
+		fmt.Printf(
+			"Error al interpretar la respuesta JSON: %v\n",
+			err,
+		)
+		return nil
+	}
+
+	// Verificar si existen audios.
+	if len(respuesta.VectorMusica) == 0 {
+		fmt.Printf(
+			"No hay musica disponible.\n",
+		)
+		return nil
+	}
+
+	return respuesta.VectorMusica
+}
+
+func SolicitarAudioLibros(ctx context.Context) []dtos.MetadataAudioLibrosDTO{
+	serverURL := "http://localhost:8080/audiolibros/all"
+
+	// Crear cliente HTTP.
+	httpClient := &http.Client{}
+
+	// Crear la petición GET asociada al contexto recibido.
+	req, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodGet,
+		serverURL,
+		nil,
+	)
+	if err != nil {
+		fmt.Printf("Error al crear la petición HTTP: %v\n", err)
+		return nil
+	}
+
+	// Realizar la petición REST.
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		fmt.Printf("Error al conectar con el servidor de metadatos: %v\n", err)
+		return nil
+	}
+	defer resp.Body.Close()
+
+	// El servidor indica que no se encontraron audios.
+	if resp.StatusCode == http.StatusBadRequest {
+		fmt.Printf(
+			"No se encontraron audiolibros.\n",
+		)
+		return nil
+	}
+
+	// Cualquier código diferente de 200 se considera
+	// una respuesta no exitosa.
+	if resp.StatusCode != http.StatusOK {
+		fmt.Printf(
+			"Error al consultar los audiolibros. Código HTTP: %d\n",
+			resp.StatusCode,
+		)
+		return nil
+	}
+
+	// DTO que representa exactamente la respuesta del servidor REST.
+	var respuesta dtos.RespuestaAudioLibrosDTO
+
+	// Convertir el JSON recibido a una estructura Go.
+	err = json.NewDecoder(resp.Body).Decode(&respuesta)
+	if err != nil {
+		fmt.Printf(
+			"Error al interpretar la respuesta JSON: %v\n",
+			err,
+		)
+		return nil
+	}
+
+	// Verificar si existen audios.
+	if len(respuesta.VectorAudioLibros) == 0 {
+		fmt.Printf(
+			"No hay audiolibros disponible.\n",
+		)
+		return nil
+	}
+
+	return respuesta.VectorAudioLibros
+}
+
+func SolicitarPodcast(ctx context.Context) []dtos.MetadataPodcastDTO{
+	serverURL := "http://localhost:8080/podcasts/all"
+
+	// Crear cliente HTTP.
+	httpClient := &http.Client{}
+
+	// Crear la petición GET asociada al contexto recibido.
+	req, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodGet,
+		serverURL,
+		nil,
+	)
+	if err != nil {
+		fmt.Printf("Error al crear la petición HTTP: %v\n", err)
+		return nil
+	}
+
+	// Realizar la petición REST.
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		fmt.Printf("Error al conectar con el servidor de metadatos: %v\n", err)
+		return nil
+	}
+	defer resp.Body.Close()
+
+	// El servidor indica que no se encontraron audios.
+	if resp.StatusCode == http.StatusBadRequest {
+		fmt.Printf(
+			"No se encontraron podcast.\n",
+		)
+		return nil
+	}
+
+	// Cualquier código diferente de 200 se considera
+	// una respuesta no exitosa.
+	if resp.StatusCode != http.StatusOK {
+		fmt.Printf(
+			"Error al consultar los podcast. Código HTTP: %d\n",
+			resp.StatusCode,
+		)
+		return nil
+	}
+
+	// DTO que representa exactamente la respuesta del servidor REST.
+	var respuesta dtos.RespuestaPodcastDTO
+
+	// Convertir el JSON recibido a una estructura Go.
+	err = json.NewDecoder(resp.Body).Decode(&respuesta)
+	if err != nil {
+		fmt.Printf(
+			"Error al interpretar la respuesta JSON: %v\n",
+			err,
+		)
+		return nil
+	}
+
+	// Verificar si existen audios.
+	if len(respuesta.VectorPodcast) == 0 {
+		fmt.Printf(
+			"No hay podcast disponible.\n",
+		)
+		return nil
+	}
+
+	return respuesta.VectorPodcast
+}
+
+
+func SolicitarRuidoBlanco(ctx context.Context) []dtos.MetadataRuidoBlancoDTO{
+	serverURL := "http://localhost:8080/ruido-blanco/all"
+
+	// Crear cliente HTTP.
+	httpClient := &http.Client{}
+
+	// Crear la petición GET asociada al contexto recibido.
+	req, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodGet,
+		serverURL,
+		nil,
+	)
+	if err != nil {
+		fmt.Printf("Error al crear la petición HTTP: %v\n", err)
+		return nil
+	}
+
+	// Realizar la petición REST.
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		fmt.Printf("Error al conectar con el servidor de metadatos: %v\n", err)
+		return nil
+	}
+	defer resp.Body.Close()
+
+	// El servidor indica que no se encontraron audios.
+	if resp.StatusCode == http.StatusBadRequest {
+		fmt.Printf(
+			"No se encontro ruido blanco.\n",
+		)
+		return nil
+	}
+
+	// Cualquier código diferente de 200 se considera
+	// una respuesta no exitosa.
+	if resp.StatusCode != http.StatusOK {
+		fmt.Printf(
+			"Error al consultar el ruido blanco. Código HTTP: %d\n",
+			resp.StatusCode,
+		)
+		return nil
+	}
+
+	// DTO que representa exactamente la respuesta del servidor REST.
+	var respuesta dtos.RespuestaRuidoBlancoDTO
+
+	// Convertir el JSON recibido a una estructura Go.
+	err = json.NewDecoder(resp.Body).Decode(&respuesta)
+	if err != nil {
+		fmt.Printf(
+			"Error al interpretar la respuesta JSON: %v\n",
+			err,
+		)
+		return nil
+	}
+
+	// Verificar si existen audios.
+	if len(respuesta.VectorRuidoBlanco) == 0 {
+		fmt.Printf(
+			"No hay Ruido Blanco disponible.\n",
+		)
+		return nil
+	}
+
+	return respuesta.VectorRuidoBlanco
+}
