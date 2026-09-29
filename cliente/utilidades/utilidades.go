@@ -5,6 +5,11 @@ import (
 	"io"
 	"log"
 	"time"
+	"context"
+	"encoding/json"
+	"net/http"
+	"net/url"
+	"cliente.local/grpc-cliente/dtos"
 
 	"github.com/faiface/beep"
 	"github.com/faiface/beep/mp3"
@@ -53,4 +58,83 @@ func RecibirAudio(
 	// Esperar hasta que termine la reproducción
 	<-canalSincronizacion
 	fmt.Println("Reproducción finalizada.")
+}
+
+func SolicitarMetadata(tipo string, ctx context.Context) []dtos.MetadataAudioDTO {
+	// Escapar el tipo para poder utilizarlo correctamente
+	// como parámetro de la URL.
+	tipoEscapado := url.PathEscape(tipo)
+
+	serverURL := fmt.Sprintf(
+		"http://localhost:8080/audios/tipo/%s",
+		tipoEscapado,
+	)
+
+	// Crear cliente HTTP.
+	httpClient := &http.Client{}
+
+	// Crear la petición GET asociada al contexto recibido.
+	req, err := http.NewRequestWithContext(
+		ctx,
+		http.MethodGet,
+		serverURL,
+		nil,
+	)
+	if err != nil {
+		fmt.Printf("Error al crear la petición HTTP: %v\n", err)
+		return nil
+	}
+
+	// Realizar la petición REST.
+	resp, err := httpClient.Do(req)
+	if err != nil {
+		fmt.Printf("Error al conectar con el servidor de metadatos: %v\n", err)
+		return nil
+	}
+	defer resp.Body.Close()
+
+	// El servidor indica que no se encontraron audios.
+	if resp.StatusCode == http.StatusBadRequest {
+		fmt.Printf(
+			"No se encontraron audios para el tipo '%s'.\n",
+			tipo,
+		)
+		return nil
+	}
+
+	// Cualquier código diferente de 200 se considera
+	// una respuesta no exitosa.
+	if resp.StatusCode != http.StatusOK {
+		fmt.Printf(
+			"Error al consultar los audios. Código HTTP: %d\n",
+			resp.StatusCode,
+		)
+		return nil
+	}
+
+	// DTO que representa exactamente la respuesta del servidor REST.
+	var respuesta dtos.RespuestaAudiosPorTipoDTO
+
+	// Convertir el JSON recibido a una estructura Go.
+	err = json.NewDecoder(resp.Body).Decode(&respuesta)
+	if err != nil {
+		fmt.Printf(
+			"Error al interpretar la respuesta JSON: %v\n",
+			err,
+		)
+		return nil
+	}
+
+	fmt.Printf("\n%s\n", respuesta.Mensaje)
+
+	// Verificar si existen audios.
+	if len(respuesta.VectorAudiosPorTipo) == 0 {
+		fmt.Printf(
+			"No hay audios disponibles para el tipo '%s'.\n",
+			tipo,
+		)
+		return nil
+	}
+
+	return respuesta.VectorAudiosPorTipo
 }

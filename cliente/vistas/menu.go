@@ -3,16 +3,16 @@ package vistas
 import (
 	"bufio"
 	"context"
-	"encoding/json"
+
 	"fmt"
 	"io"
 	"log"
-	"net/http"
-	"net/url"
+
 	"os"
+	"strconv"
 	"strings"
 
-	"cliente.local/grpc-cliente/dtos"
+	"cliente.local/grpc-cliente/utilidades"
 
 	util "cliente.local/grpc-cliente/utilidades"
 	pb "servidorStreaming.local/grpc-servidor/serviciosAudio"
@@ -22,11 +22,8 @@ import (
 Funcion que lee el titulo de un audio que se quiere reproducir
 e invoca un procedimiento remoto que se contecta al servidor de audios
 */
-func RecibirAudioAReproducir(client pb.AudioServiceClient, ctx context.Context) {
+func RecibirAudioAReproducir(client pb.AudioServiceClient, ctx context.Context, titulo string) {
 
-	readerInput := bufio.NewReader(os.Stdin)
-	fmt.Print("Ingrese el título del audio: ")
-	titulo, _ := readerInput.ReadString('\n')
 	titulo = strings.TrimSpace(titulo)
 
 	//Invocación del procedimiento remoto
@@ -51,89 +48,63 @@ func RecibirAudioAReproducir(client pb.AudioServiceClient, ctx context.Context) 
 Fachada REST para pedirle al servidor de metadatos los audios
 disponibles para un determinado tipo y mostrar sus títulos.
 */
-func MostrarAudiosPorTipo(tipo string, ctx context.Context) {
-
-	// Escapar el tipo para poder utilizarlo correctamente
-	// como parámetro de la URL.
-	tipoEscapado := url.PathEscape(tipo)
-
-	serverURL := fmt.Sprintf(
-		"http://localhost:8080/audios/%s",
-		tipoEscapado,
-	)
-
-	// Crear cliente HTTP.
-	httpClient := &http.Client{}
-
-	// Crear la petición GET asociada al contexto recibido.
-	req, err := http.NewRequestWithContext(
-		ctx,
-		http.MethodGet,
-		serverURL,
-		nil,
-	)
-	if err != nil {
-		fmt.Printf("Error al crear la petición HTTP: %v\n", err)
-		return
-	}
-
-	// Realizar la petición REST.
-	resp, err := httpClient.Do(req)
-	if err != nil {
-		fmt.Printf("Error al conectar con el servidor de metadatos: %v\n", err)
-		return
-	}
-	defer resp.Body.Close()
-
-	// El servidor indica que no se encontraron audios.
-	if resp.StatusCode == http.StatusUnauthorized {
-		fmt.Printf(
-			"No se encontraron audios para el tipo '%s'.\n",
-			tipo,
-		)
-		return
-	}
-
-	// Cualquier código diferente de 200 se considera
-	// una respuesta no exitosa.
-	if resp.StatusCode != http.StatusOK {
-		fmt.Printf(
-			"Error al consultar los audios. Código HTTP: %d\n",
-			resp.StatusCode,
-		)
-		return
-	}
-
-	// DTO que representa exactamente la respuesta del servidor REST.
-	var respuesta dtos.RespuestaAudiosPorTipoDTO
-
-	// Convertir el JSON recibido a una estructura Go.
-	err = json.NewDecoder(resp.Body).Decode(&respuesta)
-	if err != nil {
-		fmt.Printf(
-			"Error al interpretar la respuesta JSON: %v\n",
-			err,
-		)
-		return
-	}
-
-	fmt.Printf("\n%s\n", respuesta.Mensaje)
-
-	// Verificar si existen audios.
-	if len(respuesta.VectorAudiosPorTipo) == 0 {
-		fmt.Printf(
-			"No hay audios disponibles para el tipo '%s'.\n",
-			tipo,
-		)
-		return
-	}
-
+func MostrarAudiosPorTipo(tipo string, ctx context.Context, client pb.AudioServiceClient) {
+	VectorAudiosPorTipo := utilidades.SolicitarMetadata(tipo, ctx)
+	
+	// Menu de audios disponibles segun el tipo seleccionado
+	bandera := true
+	for bandera {
 	// Mostrar únicamente los títulos.
-	fmt.Printf("\nAudios disponibles de tipo '%s':\n", tipo)
+		fmt.Printf("\nAudios disponibles de tipo '%s':\n", tipo)
 
-	for _, audio := range respuesta.VectorAudiosPorTipo {
-		fmt.Printf("- %s\n", audio.Titulo)
-	}
+		i := 0
+		for _, audio := range VectorAudiosPorTipo {
+			fmt.Printf("%d - %s\n", i+1, audio.Titulo)
+			i++
+		}
+		fmt.Printf("%d - Vovler", i+1)
+
+		// leer de que audio se quiere mostrar metadatos
+		readerInput := bufio.NewReader(os.Stdin)
+		fmt.Print("\nIngrese la opcion del menu: ")
+		opcion, _ := readerInput.ReadString('\n')
+		opcion = strings.TrimSpace(opcion)
+
+		numero, err := strconv.Atoi(opcion)
+		if err != nil {
+			fmt.Println("Error al convertir:", err)
+			return
+		}
+
+		// mostrar los metadatos del audio seleccionado
+		if (numero > len(VectorAudiosPorTipo)+1 || numero < 1){
+			fmt.Println("La opcion ingresada no es valida")
+		}else if (numero == len(VectorAudiosPorTipo)+1){
+			bandera = false
+		}else{
+			fmt.Printf("Recurso: %s",VectorAudiosPorTipo[numero-1].Titulo)
+			fmt.Printf("\nTitulo: %s", VectorAudiosPorTipo[numero-1].Titulo)
+			fmt.Printf("\nDuracion: %d", VectorAudiosPorTipo[numero-1].Duracion)
+			fmt.Printf("\nTipo: %s \n", VectorAudiosPorTipo[numero-1].Tipo)
+
+			// opcion de reproducir, si o volver. Y en opcion de reproducir ya la otra opcion
+			fmt.Printf("\n¿Deseas reproducir el audio?")
+			fmt.Printf("\n1. Si")
+			fmt.Printf("\n2. No, regresar")
+			reproducir, _ := readerInput.ReadString('\n')
+			reproducir = strings.TrimSpace(opcion)
+
+			switch reproducir {
+			case "1":
+				RecibirAudioAReproducir(client, ctx, VectorAudiosPorTipo[numero-1].Titulo)
+			case "2":
+				bandera = false
+			default:
+				fmt.Printf("La opcion seleccionada no es valida")
+			}
+			
+		}
+	}	
 
 	fmt.Println()
 }
@@ -145,7 +116,7 @@ func MostrarMenuDeTipos(client pb.AudioServiceClient, ctx context.Context) {
 	bandera := true
 	for bandera {
 		fmt.Print("\n Menu de tipos \n")
-		fmt.Print("\n 1. Canciones \n")
+		fmt.Print("\n 1. Musica \n")
 		fmt.Print("\n 2. Audiolibros\n")
 		fmt.Print("\n 3. Ruido Blanco\n")
 		fmt.Print("\n 4. Podcast\n")
@@ -158,13 +129,13 @@ func MostrarMenuDeTipos(client pb.AudioServiceClient, ctx context.Context) {
 
 		switch opcion {
 		case "1":
-			MostrarAudiosPorTipo("canciones", ctx)
+			MostrarAudiosPorTipo("Musica", ctx, client)
 		case "2":
-			MostrarAudiosPorTipo("Audiolibros", ctx)
+			MostrarAudiosPorTipo("Audiolibros", ctx, client)
 		case "3":
-			MostrarAudiosPorTipo("Ruido Blanco", ctx)
+			MostrarAudiosPorTipo("Ruido Blanco", ctx, client)
 		case "4":
-			MostrarAudiosPorTipo("Podcast", ctx)
+			MostrarAudiosPorTipo("Podcast", ctx, client)
 		case "5":
 			bandera = false
 		default:

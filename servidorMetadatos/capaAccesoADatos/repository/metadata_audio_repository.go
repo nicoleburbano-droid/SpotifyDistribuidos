@@ -73,11 +73,11 @@ func (this *MetadataAudioRepository) RegistrarAudio(audio entity.MetadataAudio) 
 
 //ObtenerAudiosPorTipo obtiene todo el vector de audios segun un determinado tipo
 
-func (this *MetadataAudioRepository) ObtenerAudiosPorTipo (tipo string) entity.MetadataAudio[] {
-	var vectorAudiosTipo entity.MetadataAudio
+func (this *MetadataAudioRepository) ObtenerAudiosPorTipo(tipo string) []entity.MetadataAudio {
+	var vectorAudiosTipo []entity.MetadataAudio
 	for audio := range this.vectorMetadataAudios{
-		if audio.GetTipo() == tipo {
-			vectorAudiosTipo.append(audio)
+		if this.vectorMetadataAudios[audio].GetTipo() == tipo {
+			vectorAudiosTipo=append(vectorAudiosTipo, this.vectorMetadataAudios[audio])
 		}
 	}
 	return vectorAudiosTipo

@@ -61,15 +61,30 @@ func (this *MetadataAudioService) ConsultarAudio(titulo string) dto.RespuestaMet
 }
 
 //Obtener AudiosPorTipo retorna todo el vector de audios almacenados
-func (this *MetadataAudioService) ObtenerAudiosPorTipo(tipo string) dto.RespuestaAudiosPorTipoDTO{
+func (this *MetadataAudioService) ObtenerAudiosPorTipo(tipo string) dto.RespuestaAudiosPorTipoDTO {
 	var respuesta dto.RespuestaAudiosPorTipoDTO
-	vecAudios := this.service.ObtenerAudiosPorTipo(tipo)
-	if vecAudios {
-		respuesta.VectorAudiosPorTipo = vecAudios
+	vecAudios := this.repository.ObtenerAudiosPorTipo(tipo)
+	
+	if len(vecAudios) > 0 {
+		// Creamos un nuevo slice del tipo DTO con la misma capacidad
+		vectorDTOs := make([]dto.MetadataAudioDTO, 0, len(vecAudios))
+		
+		// Mapeamos cada entidad a su DTO correspondiente
+		for _, audio := range vecAudios {
+			dtoAudio := dto.MetadataAudioDTO{
+				Titulo:     audio.GetTitulo(), 
+				Duracion:   audio.GetDuracion(),
+				Tipo:       audio.GetTipo(),
+				Disponible: audio.GetDisponible(),
+			}
+			vectorDTOs = append(vectorDTOs, dtoAudio)
+		}
+		
+		// Asignamos el nuevo slice de DTOs a la respuesta
+		respuesta.VectorAudiosPorTipo = vectorDTOs
 		respuesta.Codigo = 200
 		respuesta.Mensaje = "Audios del tipo buscado encontrados"
-	}
-	else{
+	} else {
 		respuesta.Codigo = 400
 		respuesta.Mensaje = "No se encontraron audios del tipo buscado"
 	}
