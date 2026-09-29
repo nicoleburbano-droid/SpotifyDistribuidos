@@ -18,7 +18,7 @@ func main() {
 
 	router.POST("/audios", audioController.RegistrarAudio)
 	router.GET("/audios/titulo/:titulo", audioController.ConsultarAudio)
-	router.GET("audios/tipo/:tipo", audioController.ConsultarTodos)
+	router.GET("audios/tipo/:tipo", audioController.ConsultarAudiosPorTipo)
 
 	router.Run(":8080")
 
