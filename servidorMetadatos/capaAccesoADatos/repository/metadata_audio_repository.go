@@ -6,11 +6,11 @@ import "microservicio/capaAccesoADatos/entity"
 // el slice de audios y expone las operaciones de búsqueda y registro.
 
 type MetadataAudioRepository struct {
-	vectorMetadataAudios      []entity.MetadataAudio
-	vectorTiposDeAudio        []entity.TipoAudio
-	vectorMetadataMusica      []entity.MetadataMusica
+	vectorMetadataAudios []entity.MetadataAudio
+	vectorTiposDeAudio []entity.TipoAudio
+	vectorMetadataMusica []entity.MetadataMusica
 	vectorMetadataAudioLibros []entity.MetadataAudioLibros
-	vectorMetadataPodcast     []entity.MetadataPodcast
+	vectorMetadataPodcast []entity.MetadataPodcast
 	vectorMetadataRuidoBlanco []entity.MetadataRuidoBlanco
 }
 
@@ -24,7 +24,6 @@ func NewMetadataAudioRepository() *MetadataAudioRepository {
 	this.CargarMetadataAudioLibros()
 	this.CargarMetadataPodcast()
 	this.CargarMetadataRuidoBlanco()
-
 	return this
 }
 
@@ -265,17 +264,14 @@ func (this *MetadataAudioRepository) RegistrarAudio(audio entity.MetadataAudio) 
 func (this *MetadataAudioRepository) RegistrarMusica(musica entity.MetadataMusica) {
 	this.vectorMetadataMusica = append(this.vectorMetadataMusica, musica)
 }
-
 // RegistrarAudioLibro
 func (this *MetadataAudioRepository) RegistrarAudioLibro(libro entity.MetadataAudioLibros) {
 	this.vectorMetadataAudioLibros = append(this.vectorMetadataAudioLibros, libro)
 }
-
 // RegistrarPodcast
 func (this *MetadataAudioRepository) RegistrarPodcast(podcast entity.MetadataPodcast) {
 	this.vectorMetadataPodcast = append(this.vectorMetadataPodcast, podcast)
 }
-
 // RegistrarRuidoBlanco
 func (this *MetadataAudioRepository) RegistrarRuidoBlanco(ruido entity.MetadataRuidoBlanco) {
 	this.vectorMetadataRuidoBlanco = append(this.vectorMetadataRuidoBlanco, ruido)
@@ -297,17 +293,14 @@ func (this *MetadataAudioRepository) ObtenerAudiosPorTipo(tipo string) []entity.
 func (this *MetadataAudioRepository) ObtenerVectorMusica() []entity.MetadataMusica {
 	return this.vectorMetadataMusica
 }
-
 // ObtenerVectorAudioLibros
 func (this *MetadataAudioRepository) ObtenerVectorAudioLibros() []entity.MetadataAudioLibros {
 	return this.vectorMetadataAudioLibros
 }
-
 // ObtenerVectorPodcast
 func (this *MetadataAudioRepository) ObtenerVectorPodcast() []entity.MetadataPodcast {
 	return this.vectorMetadataPodcast
 }
-
 // ObtenerVectorRuidoBlanco
 func (this *MetadataAudioRepository) ObtenerVectorRuidoBlanco() []entity.MetadataRuidoBlanco {
 	return this.vectorMetadataRuidoBlanco

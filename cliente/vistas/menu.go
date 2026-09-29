@@ -269,12 +269,12 @@ func MostrarRuidoBlanco(ctx context.Context, client pb.AudioServiceClient) {
 		}
 
 		// mostrar los metadatos del audio seleccionado
-		if numero > len(VectorAudios)+1 || numero < 1 {
+		if (numero > len(VectorAudios)+1 || numero < 1){
 			fmt.Println("La opcion ingresada no es valida")
-		} else if numero == len(VectorAudios)+1 {
+		}else if (numero == len(VectorAudios)+1){
 			bandera = false
-		} else {
-			fmt.Printf("\nRecurso: %s\n", VectorAudios[numero-1].TipoSonido)
+		}else{
+			fmt.Printf("\nRecurso: %s\n",VectorAudios[numero-1].TipoSonido)
 			fmt.Printf("\nSonido: %s", VectorAudios[numero-1].TipoSonido)
 			fmt.Printf("\nFrecuencia: %s", VectorAudios[numero-1].FrecuenciaDominante)
 			fmt.Printf("\nFuente de Audio: %s", VectorAudios[numero-1].FuenteAudio)
