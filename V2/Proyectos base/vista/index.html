@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Spotify</title>
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+  <script src="funciones.js" defer></script>
+  <script src="animaciones.js" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <h2>Reproduccion de canciones</h2>
+
+  <button id="btnConectar" onclick="conectar()">Conectar</button>
+  <button id="btnDesconectar" onclick="desconectar()" disabled>Desconectar</button>
+  <br><br>
+
+  <div id="reacciones">
+    <i class="fa-solid fa-thumbs-up reaction icon-like" data-reaction="like" onclick="enviarReaccionServidor(event)"></i>
+    <i class="fa-solid fa-heart reaction icon-heart" data-reaction="heart" onclick="enviarReaccionServidor(event)"></i>
+    <i class="fa-solid fa-face-sad-tear reaction icon-sad" data-reaction="sad" onclick="enviarReaccionServidor(event)"></i>
+    <i class="fa-solid fa-face-laugh reaction icon-fun" data-reaction="fun" onclick="enviarReaccionServidor(event)"></i>
+  </div>
+
+  <div id="chat">
+    <h3>Reacciones recibidas:</h3>
+    <div id="mensajes">
+      <!-- Las reacciones se mostrarán aquí -->
+    </div>
+  </div>  
+</body>
+</html>
+
+
