@@ -1,0 +1,58 @@
+# ==========================================
+# Secciones específicas para GO
+# ==========================================
+# Binarios compilados y arquitecturas
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Salidas de compilación de Go (como 'go build')
+*.test
+*.out
+/bin/
+
+# Gestión de dependencias y herramientas
+vendor/
+.go/
+
+# ==========================================
+# Secciones específicas para JAVA
+# ==========================================
+# Archivos compilados de Java (.class)
+*.class
+
+# Archivos de registro (Log files)
+*.log
+
+# Paquetes empaquetados (Blueprints de despliegue)
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+*.mp3
+
+# Carpetas de herramientas de construcción (Herramientas como Maven y Gradle)
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+.gradle/
+build/
+
+# ==========================================
+# Archivos comunes del Sistema Operativo e IDEs
+# ==========================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
