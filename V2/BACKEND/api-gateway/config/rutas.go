@@ -8,7 +8,20 @@ type Ruta struct {
 }
 
 var Rutas = []Ruta{
-	{Prefijo: "/api/productos", Servicio: "ms-productos", Destino: "/productos"},
-	{Prefijo: "/api/usuarios", Servicio: "ms-usuarios", Destino: "/usuarios"},
-	{Prefijo: "/api/audios", Servicio: "ms-audios", Destino: "/audios"}, //nuevo
+	{Prefijo: "/api/audios", Servicio: "servidorDeAudios", Destino: "/audios"},
+	{Prefijo: "/api/musica", Servicio: "servidorDeAudios", Destino: "/musica"},
+	{Prefijo: "/api/audiolibros", Servicio: "servidorDeAudios", Destino: "/audiolibros"},
+	{Prefijo: "/api/podcasts", Servicio: "servidorDeAudios", Destino: "/podcasts"},
+	{Prefijo: "/api/ruido-blanco", Servicio: "servidorDeAudios", Destino: "/ruido-blanco"},
+	{Prefijo: "/api/tipos-audio", Servicio: "servidorDeAudios", Destino: "/tipos-audio"},
+	{Prefijo: "/api/estadisticas", Servicio: "servidorEstadisticas", Destino: "/actuator"},
+	{Prefijo: "/api/reacciones", Servicio: "servidorReacciones", Destino: "/"},
+	// Envoy sigue escuchando en 8080 y conserva el destino gRPC 127.0.0.1:50051.
+	{Prefijo: "/api/streaming", Servicio: "servidorStreaming", Destino: "/"},
+	{Prefijo: "/api/pasarela", Servicio: "servidorSuscripciones", Destino: "/api"},
+	{Prefijo: "/api/suscripciones", Servicio: "servidorSuscripciones", Destino: "/api/suscripciones"},
+	{Prefijo: "/api/pagos", Servicio: "servidorSuscripciones", Destino: "/api/pagos"},
+	{Prefijo: "/api/tokens", Servicio: "servidorSuscripciones", Destino: "/api/tokens"},
+	{Prefijo: "/api/transacciones", Servicio: "servidorSuscripciones", Destino: "/api/transacciones"},
+	{Prefijo: "/api/estado", Servicio: "servidorSuscripciones", Destino: "/api/estado"},
 }

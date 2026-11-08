@@ -3,19 +3,23 @@ package capacontroladores
 import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/peer"
+	"log"
 	capafachadaservices "servidor.local/grpc-servidor/capaFachadaServices"
+	componenteconexioncola "servidor.local/grpc-servidor/capaFachadaServices/ComponenteConexionCola"
 	"servidor.local/grpc-servidor/capalogger"
 	pb "servidor.local/grpc-servidor/serviciosCancion"
 )
 
 type ControladorServidor struct {
 	pb.UnimplementedAudioServiceServer
-	logger *capalogger.Logger
+	logger    *capalogger.Logger
+	publisher *componenteconexioncola.RabbitPublisher
 }
 
-func NewControladorServidor(logger *capalogger.Logger) *ControladorServidor {
+func NewControladorServidor(logger *capalogger.Logger, publisher *componenteconexioncola.RabbitPublisher) *ControladorServidor {
 	return &ControladorServidor{
-		logger: logger,
+		logger:    logger,
+		publisher: publisher,
 	}
 }
 
@@ -27,6 +31,11 @@ func (thisC *ControladorServidor) EnviarCancionMedianteStream(
 	direcionCliente := ObtenerDireccionCliente(stream.Context())
 	//invocación a operación asincrona
 	go thisC.logger.AlmacenarSolicitud(req.Titulo, direcionCliente)
+	if thisC.publisher != nil {
+		if err := thisC.publisher.PublicarNotificacion(componenteconexioncola.NotificacionCancion{Titulo: req.GetTitulo(), Mensaje: "Reproducción solicitada desde " + direcionCliente}); err != nil {
+			log.Printf("No se pudo notificar la reproducción de %q a RabbitMQ: %v", req.GetTitulo(), err)
+		}
+	}
 	combined := req.GetTitulo() + "." + req.GetFormato()
 	return capafachadaservices.StreamAudioFile(
 		combined,

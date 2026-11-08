@@ -1,10 +1,19 @@
 package main
 
 import (
+	"context"
+	"errors"
 	"log"
+	"net/http"
+	"os"
+	"os/signal"
 	"path/filepath"
+	"strconv"
+	"syscall"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"pasarela-pagos/discovery"
 
 	"pasarela-pagos/config"
 	"pasarela-pagos/controllers"
@@ -49,7 +58,34 @@ func main() {
 	log.Printf(" DIRECTORIO_DATOS:  %s", cfg.DirectorioDatos)
 	log.Println("==============================================")
 
-	if err := router.Run(":" + cfg.Puerto); err != nil {
-		log.Fatal(err)
+	puerto, err := strconv.Atoi(cfg.Puerto)
+	if err != nil || puerto < 1 || puerto > 65535 {
+		log.Fatalf("PUERTO inválido: %q", cfg.Puerto)
 	}
+	servidor := &http.Server{Addr: ":" + cfg.Puerto, Handler: router}
+	go func() {
+		if err := servidor.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Fatalf("Error iniciando el servidor: %v", err)
+		}
+	}()
+
+	registro, err := discovery.Registrar(env("CONSUL_ADDR", "127.0.0.1:8500"), "servidorSuscripciones", env("SERVICE_HOST", "127.0.0.1"), puerto)
+	if err != nil {
+		log.Fatalf("no fue posible registrarse en Consul: %v", err)
+	}
+	log.Printf("Suscripciones escuchando en :%s", cfg.Puerto)
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
+	<-stop
+	registro.Desregistrar()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	_ = servidor.Shutdown(ctx)
+}
+
+func env(clave, porDefecto string) string {
+	if valor := os.Getenv(clave); valor != "" {
+		return valor
+	}
+	return porDefecto
 }

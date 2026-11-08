@@ -13,7 +13,8 @@ import (
 )
 
 func main() {
-	puerto := env("PORT", "8080")
+	// Envoy conserva su puerto 8080 para gRPC-Web; el gateway escucha en 8081.
+	puerto := env("PORT", "8081")
 	consulAddr := env("CONSUL_ADDR", "127.0.0.1:8500")
 	secreto := env("GATEWAY_SECRET", "secreto-gateway-2026")
 
