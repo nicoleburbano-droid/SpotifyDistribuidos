@@ -25,6 +25,7 @@ type PeticionDTO struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Titulo        string                 `protobuf:"bytes,1,opt,name=titulo,proto3" json:"titulo,omitempty"`
 	Formato       string                 `protobuf:"bytes,2,opt,name=formato,proto3" json:"formato,omitempty"`
+	ClienteId     string                 `protobuf:"bytes,3,opt,name=clienteId,proto3" json:"clienteId,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -69,6 +70,13 @@ func (x *PeticionDTO) GetTitulo() string {
 func (x *PeticionDTO) GetFormato() string {
 	if x != nil {
 		return x.Formato
+	}
+	return ""
+}
+
+func (x *PeticionDTO) GetClienteId() string {
+	if x != nil {
+		return x.ClienteId
 	}
 	return ""
 }
@@ -121,10 +129,11 @@ var File_servicios_proto protoreflect.FileDescriptor
 
 const file_servicios_proto_rawDesc = "" +
 	"\n" +
-	"\x0fservicios.proto\x12\tservicios\"?\n" +
+	"\x0fservicios.proto\x12\tservicios\"]\n" +
 	"\vpeticionDTO\x12\x16\n" +
 	"\x06titulo\x18\x01 \x01(\tR\x06titulo\x12\x18\n" +
-	"\aformato\x18\x02 \x01(\tR\aformato\"&\n" +
+	"\aformato\x18\x02 \x01(\tR\aformato\x12\x1c\n" +
+	"\tclienteId\x18\x03 \x01(\tR\tclienteId\"&\n" +
 	"\x10fragmentoCancion\x12\x12\n" +
 	"\x04data\x18\x01 \x01(\fR\x04data2d\n" +
 	"\fAudioService\x12T\n" +

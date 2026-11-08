@@ -17,6 +17,10 @@
   <button id="btnDesconectar" onclick="desconectar()" disabled>Desconectar</button>
   <br><br>
 
+  <label for="audio-actual">Audio que estás escuchando:</label>
+  <input id="audio-actual" type="text" placeholder="ID o título del audio">
+  <button id="btnSeleccionarAudio" onclick="seleccionarAudioActual()">Seleccionar audio</button>
+
   <div id="reacciones">
     <i class="fa-solid fa-thumbs-up reaction icon-like" data-reaction="like" onclick="enviarReaccionServidor(event)"></i>
     <i class="fa-solid fa-heart reaction icon-heart" data-reaction="heart" onclick="enviarReaccionServidor(event)"></i>

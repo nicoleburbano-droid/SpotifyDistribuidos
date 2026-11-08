@@ -14,14 +14,12 @@ var Rutas = []Ruta{
 	{Prefijo: "/api/podcasts", Servicio: "servidorDeAudios", Destino: "/podcasts"},
 	{Prefijo: "/api/ruido-blanco", Servicio: "servidorDeAudios", Destino: "/ruido-blanco"},
 	{Prefijo: "/api/tipos-audio", Servicio: "servidorDeAudios", Destino: "/tipos-audio"},
-	{Prefijo: "/api/estadisticas", Servicio: "servidorEstadisticas", Destino: "/actuator"},
+	{Prefijo: "/api/estadisticas", Servicio: "servidorEstadisticas", Destino: "/estadisticas"},
 	{Prefijo: "/api/reacciones", Servicio: "servidorReacciones", Destino: "/"},
 	// Envoy sigue escuchando en 8080 y conserva el destino gRPC 127.0.0.1:50051.
 	{Prefijo: "/api/streaming", Servicio: "servidorStreaming", Destino: "/"},
-	{Prefijo: "/api/pasarela", Servicio: "servidorSuscripciones", Destino: "/api"},
 	{Prefijo: "/api/suscripciones", Servicio: "servidorSuscripciones", Destino: "/api/suscripciones"},
 	{Prefijo: "/api/pagos", Servicio: "servidorSuscripciones", Destino: "/api/pagos"},
 	{Prefijo: "/api/tokens", Servicio: "servidorSuscripciones", Destino: "/api/tokens"},
 	{Prefijo: "/api/transacciones", Servicio: "servidorSuscripciones", Destino: "/api/transacciones"},
-	{Prefijo: "/api/estado", Servicio: "servidorSuscripciones", Destino: "/api/estado"},
 }

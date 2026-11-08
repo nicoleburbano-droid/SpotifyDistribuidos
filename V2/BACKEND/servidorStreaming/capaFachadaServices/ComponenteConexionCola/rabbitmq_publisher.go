@@ -12,8 +12,9 @@ import (
 const colaNotificaciones = "notificaciones_audios"
 
 type NotificacionCancion struct {
-	Titulo  string `json:"titulo"`
-	Mensaje string `json:"mensaje"`
+	ClienteID string `json:"clienteId"`
+	Titulo    string `json:"titulo"`
+	Mensaje   string `json:"mensaje"`
 }
 
 type RabbitPublisher struct {

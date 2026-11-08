@@ -14,6 +14,7 @@ const client = new AudioServicePromiseClient(ENVOY_HOST);
 // 1. Declara un array para almacenar los fragmentos de audio
 
 let audioChunks = [];
+let idCliente = null;
 
 
 
@@ -21,6 +22,21 @@ let audioChunks = [];
 
 const audioPlayer = document.getElementById('audio-player');
 let _firstFragmentReceived = false;
+
+function obtenerIdCliente() {
+    if (idCliente) return idCliente;
+    const clave = 'spotify-client-id';
+    try {
+        idCliente = localStorage.getItem(clave);
+        if (!idCliente) {
+            idCliente = `web-${window.crypto?.randomUUID?.() || Math.random().toString(36).slice(2)}`;
+            localStorage.setItem(clave, idCliente);
+        }
+    } catch (error) {
+        idCliente = `web-${Math.random().toString(36).slice(2)}`;
+    }
+    return idCliente;
+}
 
 
 
@@ -35,6 +51,7 @@ function iniciar_streaming_cancion(titulo, formato) {
     request.setTitulo(titulo);    
 
     request.setFormato(formato);
+    request.setClienteId(obtenerIdCliente());
 
     console.log("Solicitud preparada:", request.toObject());
     const stream = client.enviarCancionMedianteStream(request, {});

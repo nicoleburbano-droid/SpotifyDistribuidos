@@ -11,18 +11,17 @@ import (
 
 type PagoController struct {
 	servicio        *services.PagoService
-	simuladorFallos gin.HandlerFunc
 }
 
 // NuevoPagoController recibe el middleware de simulación de fallos, que solo se
 // aplica al servicio de realizar pagos.
-func NuevoPagoController(servicio *services.PagoService, simuladorFallos gin.HandlerFunc) *PagoController {
-	return &PagoController{servicio: servicio, simuladorFallos: simuladorFallos}
+func NuevoPagoController(servicio *services.PagoService) *PagoController {
+	return &PagoController{servicio: servicio}
 }
 
 func (ctl *PagoController) Registrar(rg *gin.RouterGroup) {
 	rg.POST("/tokens", ctl.generarToken)
-	rg.POST("/pagos", ctl.simuladorFallos, ctl.realizarPago)
+	rg.POST("/pagos", ctl.realizarPago)
 	rg.GET("/transacciones/:cedula", ctl.consultarTransacciones)
 }
 

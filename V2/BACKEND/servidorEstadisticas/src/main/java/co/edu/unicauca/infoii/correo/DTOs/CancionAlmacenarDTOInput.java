@@ -10,6 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CancionAlmacenarDTOInput {
+	private String clienteId;
 	private String titulo;
 	private String mensaje;
 }

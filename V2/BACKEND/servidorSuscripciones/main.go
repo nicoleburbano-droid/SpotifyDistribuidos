@@ -41,20 +41,16 @@ func main() {
 	pagoService := services.NuevoPagoService(tokenRepo, transaccionRepo, suscripcionRepo)
 
 	// Capa de controladores
-	simulador := middleware.NuevoSimuladorFallos(cfg)
+	
 	router := gin.Default()
 	router.Use(middleware.CORS())
 	api := router.Group("/api")
 	controllers.NuevoSuscripcionController(suscripcionService).Registrar(api)
-	controllers.NuevoPagoController(pagoService, simulador.Middleware()).Registrar(api)
-	controllers.NuevoEstadoController(cfg).Registrar(api)
+	controllers.NuevoPagoController(pagoService).Registrar(api)
 
 	log.Println("==============================================")
 	log.Println(" Pasarela de pagos de suscripciones Spotify")
 	log.Printf(" Puerto:            %s", cfg.Puerto)
-	log.Printf(" MODO_FALLO:        %s", cfg.ModoFallo)
-	log.Printf(" CANTIDAD_FALLOS:   %d", cfg.CantidadFallos)
-	log.Printf(" RETARDO_FALLO_MS:  %d", cfg.RetardoFallo.Milliseconds())
 	log.Printf(" DIRECTORIO_DATOS:  %s", cfg.DirectorioDatos)
 	log.Println("==============================================")
 

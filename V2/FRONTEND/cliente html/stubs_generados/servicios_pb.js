@@ -98,7 +98,8 @@ proto.servicios.peticionDTO.prototype.toObject = function(opt_includeInstance) {
 proto.servicios.peticionDTO.toObject = function(includeInstance, msg) {
   var f, obj = {
 titulo: jspb.Message.getFieldWithDefault(msg, 1, ""),
-formato: jspb.Message.getFieldWithDefault(msg, 2, "")
+formato: jspb.Message.getFieldWithDefault(msg, 2, ""),
+clienteId: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {
@@ -143,6 +144,10 @@ proto.servicios.peticionDTO.deserializeBinaryFromReader = function(msg, reader) 
       var value = /** @type {string} */ (reader.readString());
       msg.setFormato(value);
       break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setClienteId(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -186,6 +191,13 @@ proto.servicios.peticionDTO.serializeBinaryToWriter = function(message, writer) 
       f
     );
   }
+  f = message.getClienteId();
+  if (f.length > 0) {
+    writer.writeString(
+      3,
+      f
+    );
+  }
 };
 
 
@@ -222,6 +234,22 @@ proto.servicios.peticionDTO.prototype.getFormato = function() {
  */
 proto.servicios.peticionDTO.prototype.setFormato = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+/**
+ * optional string clienteId = 3;
+ * @return {string}
+ */
+proto.servicios.peticionDTO.prototype.getClienteId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+/**
+ * @param {string} value
+ * @return {!proto.servicios.peticionDTO} returns this
+ */
+proto.servicios.peticionDTO.prototype.setClienteId = function(value) {
+  return jspb.Message.setProto3StringField(this, 3, value);
 };
 
 

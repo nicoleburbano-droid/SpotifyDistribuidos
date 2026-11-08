@@ -98,14 +98,14 @@ func (this *MetadataAudioController) ObtenerPodcast(ctx *gin.Context) {
 	ctx.JSON(respuesta.Codigo, respuesta)
 }
 
-// TODO ObtenerRuidoBlanco
+// ObtenerRuidoBlanco
 func (this *MetadataAudioController) ObtenerRuidoBlanco(ctx *gin.Context) {
 	fmt.Printf("[REST] GET /ruido-blanco/all: consulta de todos los ruidos blancos\n")
 	respuesta := this.service.ObtenerRuidoBlanco()
 	ctx.JSON(respuesta.Codigo, respuesta)
 }
 
-// TODO ObtenerTiposDeAudio
+// ObtenerTiposDeAudio
 func (this *MetadataAudioController) ObtenerTiposDeAudio(ctx *gin.Context) {
 	fmt.Printf("[REST] GET /tipos-audio: consulta de tipos de audio disponibles\n")
 	ctx.JSON(http.StatusOK, this.service.ObtenerTiposDeAudio())
