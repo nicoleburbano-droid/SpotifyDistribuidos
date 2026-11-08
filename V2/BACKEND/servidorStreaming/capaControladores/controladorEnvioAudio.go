@@ -8,6 +8,7 @@ import (
 	componenteconexioncola "servidor.local/grpc-servidor/capaFachadaServices/ComponenteConexionCola"
 	"servidor.local/grpc-servidor/capalogger"
 	pb "servidor.local/grpc-servidor/serviciosCancion"
+	"time"
 )
 
 type ControladorServidor struct {
@@ -31,17 +32,33 @@ func (thisC *ControladorServidor) EnviarCancionMedianteStream(
 	direcionCliente := ObtenerDireccionCliente(stream.Context())
 	//invocación a operación asincrona
 	go thisC.logger.AlmacenarSolicitud(req.Titulo, direcionCliente)
-	if thisC.publisher != nil {
-		if err := thisC.publisher.PublicarNotificacion(componenteconexioncola.NotificacionCancion{Titulo: req.GetTitulo(), Mensaje: "Reproducción solicitada desde " + direcionCliente}); err != nil {
-			log.Printf("No se pudo notificar la reproducción de %q a RabbitMQ: %v", req.GetTitulo(), err)
-		}
-	}
 	combined := req.GetTitulo() + "." + req.GetFormato()
-	return capafachadaservices.StreamAudioFile(
+	err := capafachadaservices.StreamAudioFile(
 		combined,
 		func(data []byte) error {
 			return stream.Send(&pb.FragmentoCancion{Data: data})
 		})
+	if err != nil {
+		return err
+	}
+
+	// Comunicación asíncrona: solo cuando el audio se envió completo se avisa
+	// al servidor de estadísticas, con el usuario que lo reprodujo.
+	if thisC.publisher != nil {
+		notificacion := componenteconexioncola.NotificacionCancion{
+			Titulo:    req.GetTitulo(),
+			Mensaje:   "Reproducción completada desde " + direcionCliente,
+			IdUsuario: req.GetIdUsuario(),
+			Tipo:      req.GetTipo(),
+			Fecha:     time.Now().Format(time.RFC3339),
+		}
+		go func() {
+			if errCola := thisC.publisher.PublicarNotificacion(notificacion); errCola != nil {
+				log.Printf("No se pudo notificar la reproducción de %q a RabbitMQ: %v", req.GetTitulo(), errCola)
+			}
+		}()
+	}
+	return nil
 
 }
 

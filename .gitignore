@@ -56,3 +56,9 @@ Thumbs.db
 *.njsproj
 *.sln
 *.swp
+
+# ==========================================
+# Segundo corte
+# ==========================================
+# Audios de ejemplo (sintéticos) que sí se suben para poder probar el streaming
+!V2/BACKEND/servidorStreaming/canciones/*.mp3

@@ -1,6 +1,3 @@
-
-
-
 syntax = "proto3";
 
 package servicios;
@@ -12,12 +9,12 @@ service AudioService {
 }
 
 message peticionDTO {
-  string titulo = 1; 
+  string titulo = 1;
   string formato = 2;
+  string id_usuario = 3; // usuario que reproduce (para el servidor de estadísticas)
+  string tipo = 4;       // musica, audioLibros, podcast o ruidoBlanco
 }
 
 message fragmentoCancion {
   bytes data = 1; // Fragmento de audio
 }
-
-

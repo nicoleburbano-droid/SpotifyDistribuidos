@@ -11,9 +11,14 @@ import (
 
 const colaNotificaciones = "notificaciones_audios"
 
+// NotificacionCancion se publica cuando un audio se envió completo.
+// El servidor de estadísticas la usa para el historial de cada usuario.
 type NotificacionCancion struct {
-	Titulo  string `json:"titulo"`
-	Mensaje string `json:"mensaje"`
+	Titulo    string `json:"titulo"`
+	Mensaje   string `json:"mensaje"`
+	IdUsuario string `json:"idUsuario"`
+	Tipo      string `json:"tipo"`
+	Fecha     string `json:"fecha"`
 }
 
 type RabbitPublisher struct {
@@ -53,7 +58,7 @@ func (p *RabbitPublisher) PublicarNotificacion(mensaje NotificacionCancion) erro
 	}
 	p.mu.Lock()
 	defer p.mu.Unlock()
-	if err := p.channel.Publish("", p.queue.Name, false, false, amqp.Publishing{ContentType: "application/json", Body: body}); err != nil {
+	if err := p.channel.Publish("", p.queue.Name, false, false, amqp.Publishing{ContentType: "application/json", DeliveryMode: amqp.Persistent, Body: body}); err != nil {
 		return fmt.Errorf("error publicando notificación en RabbitMQ: %w", err)
 	}
 	fmt.Printf("Notificación enviada a RabbitMQ: %s\n", body)
