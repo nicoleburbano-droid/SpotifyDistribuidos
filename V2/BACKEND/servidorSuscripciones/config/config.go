@@ -26,14 +26,14 @@ type Config struct {
 
 // Cargar lee las variables de entorno y aplica valores por defecto.
 //
-//	PUERTO            puerto HTTP (por defecto 8080)
+//	PUERTO            puerto HTTP (por defecto 5002; el 8080 es de Envoy)
 //	MODO_FALLO        NINGUNO | PETICION | RESPUESTA (por defecto NINGUNO)
 //	CANTIDAD_FALLOS   número de peticiones de pago, por token, que fallarán (por defecto 0)
 //	RETARDO_FALLO_MS  tiempo que el servidor "cuelga" la conexión antes de cerrarla (por defecto 5000)
 //	DIRECTORIO_DATOS  carpeta donde se persisten tokens y transacciones (por defecto ./datos)
 func Cargar() Config {
 	cfg := Config{
-		Puerto:          valorOPorDefecto("PUERTO", "8080"),
+		Puerto:          valorOPorDefecto("PUERTO", "5002"),
 		ModoFallo:       strings.ToUpper(valorOPorDefecto("MODO_FALLO", ModoNinguno)),
 		CantidadFallos:  enteroOPorDefecto("CANTIDAD_FALLOS", 0),
 		RetardoFallo:    time.Duration(enteroOPorDefecto("RETARDO_FALLO_MS", 5000)) * time.Millisecond,

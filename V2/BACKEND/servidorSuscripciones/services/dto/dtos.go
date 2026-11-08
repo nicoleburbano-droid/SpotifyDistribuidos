@@ -41,6 +41,7 @@ type RespuestaPagoDTO struct {
 	MontoTransaccion       float64  `json:"monto_transaccion"`
 	TransaccionRealizada   bool     `json:"transaccion_realizada"`
 	PreviamenteRealizada   bool     `json:"previamente_realizada"`
+	Almacenado             bool     `json:"almacenado"` // la transacción quedó guardada en datos/transacciones.json
 	MontoTransaccionPrevia *float64 `json:"monto_transaccion_previa,omitempty"`
 	IDTransaccion          string   `json:"id_transaccion,omitempty"`
 	FechaTransaccion       string   `json:"fecha_transaccion,omitempty"`
