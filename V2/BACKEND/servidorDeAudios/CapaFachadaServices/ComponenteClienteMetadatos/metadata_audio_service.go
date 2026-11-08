@@ -71,6 +71,7 @@ func (this *MetadataAudioService) RegistrarPodcast(podcastDTO dto.MetadataPodcas
 // TODO registrarRuidoBlanco
 func (this *MetadataAudioService) RegistrarRuidoBlanco(ruidoDTO dto.MetadataRuidoBlancoDTO) {
 	var ruido entity.MetadataRuidoBlanco
+	ruido.SetTitulo(ruidoDTO.Titulo)
 	ruido.SetTipoSonido(ruidoDTO.TipoSonido)
 	ruido.SetFuenteAudio(ruidoDTO.FuenteAudio)
 	ruido.SetUsoSugerido(ruidoDTO.UsoSugerido)
@@ -148,11 +149,11 @@ func (this *MetadataAudioService) ConsultarPodcast(titulo string) dto.RespuestaP
 }
 
 // TODO ConsultarRuidoBlanco
-func (this *MetadataAudioService) ConsultarRuidoBlanco(tipoSonido string) dto.RespuestaRuidoBlancoDTO {
+func (this *MetadataAudioService) ConsultarRuidoBlanco(titulo string) dto.RespuestaRuidoBlancoDTO {
 	var respuesta dto.RespuestaRuidoBlancoDTO
-	ruido, encontrado := this.repository.BuscarRuidoBlanco(tipoSonido)
+	ruido, encontrado := this.repository.BuscarRuidoBlanco(titulo)
 	if encontrado {
-		respuesta.VectorRuidoBlanco = []dto.MetadataRuidoBlancoDTO{{TipoSonido: ruido.TipoSonido(), FuenteAudio: ruido.FuenteAudio(), UsoSugerido: ruido.UsoSugerido(), ProveedorContenido: ruido.ProveedorContenido(), DuracionBucle: ruido.DuracionBucle(), FrecuenciaDominante: ruido.FrecuenciaDominante()}}
+		respuesta.VectorRuidoBlanco = []dto.MetadataRuidoBlancoDTO{{Titulo: ruido.Titulo(), TipoSonido: ruido.TipoSonido(), FuenteAudio: ruido.FuenteAudio(), UsoSugerido: ruido.UsoSugerido(), ProveedorContenido: ruido.ProveedorContenido(), DuracionBucle: ruido.DuracionBucle(), FrecuenciaDominante: ruido.FrecuenciaDominante()}}
 		respuesta.Codigo, respuesta.Mensaje = 200, "Metadata del ruido blanco encontrada"
 	} else {
 		respuesta.Codigo, respuesta.Mensaje = 400, "La metadata del ruido blanco no se encontro"
@@ -238,7 +239,7 @@ func (this *MetadataAudioService) ObtenerPodcast() dto.RespuestaPodcastDTO {
 func (this *MetadataAudioService) ObtenerRuidoBlanco() dto.RespuestaRuidoBlancoDTO {
 	var respuesta dto.RespuestaRuidoBlancoDTO
 	for _, ruido := range this.repository.ObtenerVectorRuidoBlanco() {
-		respuesta.VectorRuidoBlanco = append(respuesta.VectorRuidoBlanco, dto.MetadataRuidoBlancoDTO{TipoSonido: ruido.TipoSonido(), FuenteAudio: ruido.FuenteAudio(), UsoSugerido: ruido.UsoSugerido(), ProveedorContenido: ruido.ProveedorContenido(), DuracionBucle: ruido.DuracionBucle(), FrecuenciaDominante: ruido.FrecuenciaDominante()})
+		respuesta.VectorRuidoBlanco = append(respuesta.VectorRuidoBlanco, dto.MetadataRuidoBlancoDTO{Titulo: ruido.Titulo(), TipoSonido: ruido.TipoSonido(), FuenteAudio: ruido.FuenteAudio(), UsoSugerido: ruido.UsoSugerido(), ProveedorContenido: ruido.ProveedorContenido(), DuracionBucle: ruido.DuracionBucle(), FrecuenciaDominante: ruido.FrecuenciaDominante()})
 	}
 	if len(respuesta.VectorRuidoBlanco) > 0 {
 		respuesta.Codigo, respuesta.Mensaje = 200, "Ruidos blancos encontrados"
@@ -250,7 +251,7 @@ func (this *MetadataAudioService) ObtenerRuidoBlanco() dto.RespuestaRuidoBlancoD
 
 // TODO ObtenerTiposDeAudio
 func (this *MetadataAudioService) ObtenerTiposDeAudio() []dto.TipoAudioDTO {
-	var tipos []dto.TipoAudioDTO
+	tipos := []dto.TipoAudioDTO{}
 	for _, tipo := range this.repository.ObtenerVectorTiposDeAudio() {
 		tipos = append(tipos, dto.TipoAudioDTO{Id: tipo.Id(), Tipo: tipo.Tipo()})
 	}

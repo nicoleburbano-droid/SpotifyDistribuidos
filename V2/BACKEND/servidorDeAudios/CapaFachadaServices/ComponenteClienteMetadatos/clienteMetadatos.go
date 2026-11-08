@@ -25,7 +25,7 @@ func (this *ClienteMetadatos) RegistrarMetadatos(tipo string, metadatosDTO inter
 			return fmt.Errorf("los metadatos para %q deben ser MetadataMusicaDTO (recibido %T)", tipo, metadatosDTO)
 		}
 		this.serviceMetadatos.RegistrarMusica(musica)
-	case "audiolibro":
+	case "audiolibro", "audioLibros":
 		libro, ok := metadatosDTO.(dto.MetadataAudioLibrosDTO)
 		if !ok {
 			return fmt.Errorf("los metadatos para %q deben ser MetadataAudioLibrosDTO (recibido %T)", tipo, metadatosDTO)

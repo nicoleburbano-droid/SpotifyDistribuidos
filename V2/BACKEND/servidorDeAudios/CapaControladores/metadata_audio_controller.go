@@ -60,9 +60,9 @@ func (this *MetadataAudioController) ConsultarPodcast(ctx *gin.Context) {
 
 // ConsultarRuidoBlanco
 func (this *MetadataAudioController) ConsultarRuidoBlanco(ctx *gin.Context) {
-	tipoSonido := ctx.Param("tipoSonido")
-	fmt.Printf("[REST] GET /ruido-blanco/tipo/%s: consulta de ruido blanco\n", tipoSonido)
-	respuesta := this.service.ConsultarRuidoBlanco(tipoSonido)
+	titulo := ctx.Param("titulo")
+	fmt.Printf("[REST] GET /ruido-blanco/titulo/%s: consulta de ruido blanco\n", titulo)
+	respuesta := this.service.ConsultarRuidoBlanco(titulo)
 	ctx.JSON(respuesta.Codigo, respuesta)
 }
 
