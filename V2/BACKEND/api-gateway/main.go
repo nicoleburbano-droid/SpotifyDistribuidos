@@ -9,6 +9,7 @@ import (
 
 	"api-gateway/config"
 	"api-gateway/discovery"
+	"api-gateway/middleware"
 	"api-gateway/proxy"
 )
 
@@ -24,6 +25,7 @@ func main() {
 	}
 
 	router := gin.Default()
+	router.Use(middleware.CORS())
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"estado": "UP"})
 	})
