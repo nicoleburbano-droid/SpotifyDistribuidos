@@ -1,11 +1,16 @@
 package capaaccesoadatos
 
-import "almacenamiento/CapaAccesoADatos/entity"
+import (
+	"sync"
+
+	"almacenamiento/CapaAccesoADatos/entity"
+)
 
 // MetadataAudioRepository es un repositorio que mantiene en memoria
 // el slice de audios y expone las operaciones de búsqueda y registro.
 
 type MetadataAudioRepository struct {
+	mu sync.RWMutex // el administrador registra mientras los clientes consultan
 	vectorMetadataAudios []entity.MetadataAudio
 	vectorTiposDeAudio []entity.TipoAudio
 	vectorMetadataMusica []entity.MetadataMusica
@@ -107,8 +112,17 @@ func (this *MetadataAudioRepository) CargarMetadataMusica() {
 	objMusica3.SetSelloDiscografico("EMI Records")
 	objMusica3.SetAnioLanzamiento("1975")
 
+	// Audio de ejemplo con archivo real en servidorStreaming/canciones
+	var objMusica4 entity.MetadataMusica
+	objMusica4.SetArtistaPrincipal("Ensamble Sintético")
+	objMusica4.SetAlbum("Pruebas de Streaming")
+	objMusica4.SetGenero("Electrónica")
+	objMusica4.SetTituloCancion("Arpegio de laboratorio")
+	objMusica4.SetSelloDiscografico("Laboratorio Distribuidos")
+	objMusica4.SetAnioLanzamiento("2026")
+
 	this.vectorMetadataMusica = []entity.MetadataMusica{
-		objMusica1, objMusica2, objMusica3,
+		objMusica4, objMusica1, objMusica2, objMusica3,
 	}
 }
 
@@ -176,6 +190,7 @@ func (this *MetadataAudioRepository) CargarMetadataPodcast() {
 func (this *MetadataAudioRepository) CargarMetadataRuidoBlanco() {
 	var objRuido1, objRuido2, objRuido3 entity.MetadataRuidoBlanco
 
+	objRuido1.SetTitulo("Ruido Blanco Clásico")
 	objRuido1.SetTipoSonido("Ruido Blanco Clásico")
 	objRuido1.SetFuenteAudio("Generador Estático Analógico")
 	objRuido1.SetUsoSugerido("Concentración y Estudio profunda")
@@ -183,6 +198,7 @@ func (this *MetadataAudioRepository) CargarMetadataRuidoBlanco() {
 	objRuido1.SetDuracionBucle(60)
 	objRuido1.SetFrecuenciaDominante("Plana (20Hz - 20kHz)")
 
+	objRuido2.SetTitulo("Lluvia Pesada")
 	objRuido2.SetTipoSonido("Lluvia Pesada")
 	objRuido2.SetFuenteAudio("Grabación Estéreo de Campo")
 	objRuido2.SetUsoSugerido("Conciliación del Sueño")
@@ -190,6 +206,7 @@ func (this *MetadataAudioRepository) CargarMetadataRuidoBlanco() {
 	objRuido2.SetDuracionBucle(120)
 	objRuido2.SetFrecuenciaDominante("Baja-Media (Pink Noise)")
 
+	objRuido3.SetTitulo("Estática de Televisor")
 	objRuido3.SetTipoSonido("Estática de Televisor")
 	objRuido3.SetFuenteAudio("Sintetizador Digital")
 	objRuido3.SetUsoSugerido("Bloqueo de Tinnitus / Ruido de Fondo")
@@ -197,8 +214,34 @@ func (this *MetadataAudioRepository) CargarMetadataRuidoBlanco() {
 	objRuido3.SetDuracionBucle(30)
 	objRuido3.SetFrecuenciaDominante("Alta (White Noise Puro)")
 
+	// Audios de ejemplo con archivo real en servidorStreaming/canciones
+	var objRuido4, objRuido5, objRuido6 entity.MetadataRuidoBlanco
+	objRuido4.SetTitulo("Lluvia constante")
+	objRuido4.SetTipoSonido("Ruido Blanco")
+	objRuido4.SetFuenteAudio("Lluvia")
+	objRuido4.SetUsoSugerido("Concentración")
+	objRuido4.SetProveedorContenido("Laboratorio Distribuidos")
+	objRuido4.SetDuracionBucle(60)
+	objRuido4.SetFrecuenciaDominante("Plana (20Hz - 20kHz)")
+
+	objRuido5.SetTitulo("Ventilador de noche")
+	objRuido5.SetTipoSonido("Rosa")
+	objRuido5.SetFuenteAudio("Ventilador")
+	objRuido5.SetUsoSugerido("Dormir")
+	objRuido5.SetProveedorContenido("Laboratorio Distribuidos")
+	objRuido5.SetDuracionBucle(60)
+	objRuido5.SetFrecuenciaDominante("Baja-Media (Pink Noise)")
+
+	objRuido6.SetTitulo("Bosque profundo")
+	objRuido6.SetTipoSonido("Marrón")
+	objRuido6.SetFuenteAudio("Bosque")
+	objRuido6.SetUsoSugerido("Meditación")
+	objRuido6.SetProveedorContenido("Laboratorio Distribuidos")
+	objRuido6.SetDuracionBucle(60)
+	objRuido6.SetFrecuenciaDominante("Baja (Brown Noise)")
+
 	this.vectorMetadataRuidoBlanco = []entity.MetadataRuidoBlanco{
-		objRuido1, objRuido2, objRuido3,
+		objRuido4, objRuido5, objRuido6, objRuido1, objRuido2, objRuido3,
 	}
 }
 
@@ -206,6 +249,8 @@ func (this *MetadataAudioRepository) CargarMetadataRuidoBlanco() {
 // audio encontrado y un booleano que indica si la búsqueda tuvo éxito.
 
 func (this *MetadataAudioRepository) BuscarAudio(titulo string) (entity.MetadataAudio, bool) {
+	this.mu.RLock()
+	defer this.mu.RUnlock()
 	for _, audio := range this.vectorMetadataAudios {
 		if audio.GetTitulo() == titulo {
 			return audio, true
@@ -216,6 +261,8 @@ func (this *MetadataAudioRepository) BuscarAudio(titulo string) (entity.Metadata
 
 // BuscarMusica
 func (this *MetadataAudioRepository) BuscarMusica(titulo string) (entity.MetadataMusica, bool) {
+	this.mu.RLock()
+	defer this.mu.RUnlock()
 	for _, musica := range this.vectorMetadataMusica {
 		if musica.GetTituloCancion() == titulo {
 			return musica, true
@@ -226,6 +273,8 @@ func (this *MetadataAudioRepository) BuscarMusica(titulo string) (entity.Metadat
 
 // BuscarAudioLibro
 func (this *MetadataAudioRepository) BuscarAudioLibro(titulo string) (entity.MetadataAudioLibros, bool) {
+	this.mu.RLock()
+	defer this.mu.RUnlock()
 	for _, libro := range this.vectorMetadataAudioLibros {
 		if libro.TituloLibro() == titulo {
 			return libro, true
@@ -236,6 +285,8 @@ func (this *MetadataAudioRepository) BuscarAudioLibro(titulo string) (entity.Met
 
 // BuscarPodcast
 func (this *MetadataAudioRepository) BuscarPodcast(titulo string) (entity.MetadataPodcast, bool) {
+	this.mu.RLock()
+	defer this.mu.RUnlock()
 	for _, podcast := range this.vectorMetadataPodcast {
 		if podcast.TituloEpisodio() == titulo {
 			return podcast, true
@@ -245,9 +296,11 @@ func (this *MetadataAudioRepository) BuscarPodcast(titulo string) (entity.Metada
 }
 
 // BuscarRuidoBlanco
-func (this *MetadataAudioRepository) BuscarRuidoBlanco(tipoSonido string) (entity.MetadataRuidoBlanco, bool) {
+func (this *MetadataAudioRepository) BuscarRuidoBlanco(titulo string) (entity.MetadataRuidoBlanco, bool) {
+	this.mu.RLock()
+	defer this.mu.RUnlock()
 	for _, ruido := range this.vectorMetadataRuidoBlanco {
-		if ruido.TipoSonido() == tipoSonido {
+		if ruido.Titulo() == titulo {
 			return ruido, true
 		}
 	}
@@ -257,29 +310,41 @@ func (this *MetadataAudioRepository) BuscarRuidoBlanco(tipoSonido string) (entit
 // RegistrarAudio agrega un nuevo audio al vector.
 
 func (this *MetadataAudioRepository) RegistrarAudio(audio entity.MetadataAudio) {
+	this.mu.Lock()
+	defer this.mu.Unlock()
 	this.vectorMetadataAudios = append(this.vectorMetadataAudios, audio)
 }
 
 // RegistrarMusica
 func (this *MetadataAudioRepository) RegistrarMusica(musica entity.MetadataMusica) {
+	this.mu.Lock()
+	defer this.mu.Unlock()
 	this.vectorMetadataMusica = append(this.vectorMetadataMusica, musica)
 }
 // RegistrarAudioLibro
 func (this *MetadataAudioRepository) RegistrarAudioLibro(libro entity.MetadataAudioLibros) {
+	this.mu.Lock()
+	defer this.mu.Unlock()
 	this.vectorMetadataAudioLibros = append(this.vectorMetadataAudioLibros, libro)
 }
 // RegistrarPodcast
 func (this *MetadataAudioRepository) RegistrarPodcast(podcast entity.MetadataPodcast) {
+	this.mu.Lock()
+	defer this.mu.Unlock()
 	this.vectorMetadataPodcast = append(this.vectorMetadataPodcast, podcast)
 }
 // RegistrarRuidoBlanco
 func (this *MetadataAudioRepository) RegistrarRuidoBlanco(ruido entity.MetadataRuidoBlanco) {
+	this.mu.Lock()
+	defer this.mu.Unlock()
 	this.vectorMetadataRuidoBlanco = append(this.vectorMetadataRuidoBlanco, ruido)
 }
 
 //ObtenerAudiosPorTipo obtiene todo el vector de audios segun un determinado tipo
 
 func (this *MetadataAudioRepository) ObtenerAudiosPorTipo(tipo string) []entity.MetadataAudio {
+	this.mu.RLock()
+	defer this.mu.RUnlock()
 	var vectorAudiosTipo []entity.MetadataAudio
 	for audio := range this.vectorMetadataAudios {
 		if this.vectorMetadataAudios[audio].GetTipo() == tipo {
@@ -291,19 +356,27 @@ func (this *MetadataAudioRepository) ObtenerAudiosPorTipo(tipo string) []entity.
 
 // ObtenerVectorMusica
 func (this *MetadataAudioRepository) ObtenerVectorMusica() []entity.MetadataMusica {
-	return this.vectorMetadataMusica
+	this.mu.RLock()
+	defer this.mu.RUnlock()
+	return append([]entity.MetadataMusica{}, this.vectorMetadataMusica...)
 }
 // ObtenerVectorAudioLibros
 func (this *MetadataAudioRepository) ObtenerVectorAudioLibros() []entity.MetadataAudioLibros {
-	return this.vectorMetadataAudioLibros
+	this.mu.RLock()
+	defer this.mu.RUnlock()
+	return append([]entity.MetadataAudioLibros{}, this.vectorMetadataAudioLibros...)
 }
 // ObtenerVectorPodcast
 func (this *MetadataAudioRepository) ObtenerVectorPodcast() []entity.MetadataPodcast {
-	return this.vectorMetadataPodcast
+	this.mu.RLock()
+	defer this.mu.RUnlock()
+	return append([]entity.MetadataPodcast{}, this.vectorMetadataPodcast...)
 }
 // ObtenerVectorRuidoBlanco
 func (this *MetadataAudioRepository) ObtenerVectorRuidoBlanco() []entity.MetadataRuidoBlanco {
-	return this.vectorMetadataRuidoBlanco
+	this.mu.RLock()
+	defer this.mu.RUnlock()
+	return append([]entity.MetadataRuidoBlanco{}, this.vectorMetadataRuidoBlanco...)
 }
 
 // ObtenerVectorTiposDeAudio

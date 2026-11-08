@@ -6,3 +6,14 @@ services:
     ports:
       - "8500:8500"   # API HTTP + UI web (http://localhost:8500)
       - "8600:8600/udp" # DNS
+
+  # Cola de mensajes entre el servidor de streaming y el de estadísticas
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq-spotify
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: "1234"
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # consola web (http://localhost:15672)

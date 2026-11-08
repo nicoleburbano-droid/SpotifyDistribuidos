@@ -2,6 +2,7 @@
 package entity
 
 type MetadataRuidoBlanco struct{
+	titulo string // nombre del audio (y del archivo que lee el streaming)
 	tipoSonido string
 	fuenteAudio string
 	usoSugerido string
@@ -11,6 +12,10 @@ type MetadataRuidoBlanco struct{
 }
 
 // getters
+
+func (r *MetadataRuidoBlanco) Titulo() string {
+	return r.titulo
+}
 
 func (r *MetadataRuidoBlanco) TipoSonido() string {
 	return r.tipoSonido
@@ -37,6 +42,10 @@ func (r *MetadataRuidoBlanco) FrecuenciaDominante() string {
 }
 
 // setters
+
+func (r *MetadataRuidoBlanco) SetTitulo(titulo string) {
+	r.titulo = titulo
+}
 
 func (r *MetadataRuidoBlanco) SetTipoSonido(tipo string) {
 	r.tipoSonido = tipo

@@ -25,13 +25,13 @@ const nombreServicio = "servidorDeAudios"
 // se guarda donde lo lee el servidor de streaming y los metadatos se
 // registran en el servidor de metadatos.
 func main() {
-	puerto := obtenerVariable("PUERTO_AUDIOS", "5000")
+	puerto := obtenerVariable("PUERTO_AUDIOS", "5001")
 	numeroPuerto, err := strconv.Atoi(puerto)
 	if err != nil || numeroPuerto < 1 || numeroPuerto > 65535 {
 		log.Fatalf("PUERTO_AUDIOS inválido: %q", puerto)
 	}
-	// El servidor de streaming abre los audios desde su propia carpeta.
-	carpetaAudios := obtenerVariable("CARPETA_AUDIOS", "../servidorStreaming")
+	// El servidor de streaming abre los audios desde canciones/<titulo>.<formato>
+	carpetaAudios := obtenerVariable("CARPETA_AUDIOS", "../servidorStreaming/canciones")
 	metadataAudioRepository := repositorio.NewMetadataAudioRepository()
 	serviceMetadatos := clienteMetadatos.NewMetadataAudioService(metadataAudioRepository)
 
@@ -53,7 +53,7 @@ func main() {
 	router.GET("/audiolibros/all", metadataController.ObtenerAudioLibros)
 	router.GET("/podcasts/titulo/:titulo", metadataController.ConsultarPodcast)
 	router.GET("/podcasts/all", metadataController.ObtenerPodcast)
-	router.GET("/ruido-blanco/tipo/:tipoSonido", metadataController.ConsultarRuidoBlanco)
+	router.GET("/ruido-blanco/titulo/:titulo", metadataController.ConsultarRuidoBlanco)
 	router.GET("/ruido-blanco/all", metadataController.ObtenerRuidoBlanco)
 	router.GET("/tipos-audio", metadataController.ObtenerTiposDeAudio)
 

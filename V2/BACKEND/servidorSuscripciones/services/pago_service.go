@@ -105,6 +105,7 @@ func (s *PagoService) RealizarPago(sol dto.SolicitudPagoDTO) (dto.RespuestaPagoD
 			MontoTransaccion:       sol.Monto,
 			TransaccionRealizada:   false,
 			PreviamenteRealizada:   true,
+			Almacenado:             true,
 			MontoTransaccionPrevia: &montoPrevio,
 			IDTransaccion:          previa.ID,
 			FechaTransaccion:       previa.Fecha.Format(formatoFecha),
@@ -132,12 +133,14 @@ func (s *PagoService) RealizarPago(sol dto.SolicitudPagoDTO) (dto.RespuestaPagoD
 		return dto.RespuestaPagoDTO{}, errorInterno("no fue posible actualizar el token: " + err.Error())
 	}
 
+	log.Printf("[PAGO] Transacción %s almacenada en transacciones.json", transaccion.ID)
 	log.Printf("[PAGO] Transacción %s REALIZADA: cédula %s, $%.0f, token %s", transaccion.ID, transaccion.Cedula, transaccion.Monto, token.Token)
 	return dto.RespuestaPagoDTO{
 		TokenIdempotencia:    token.Token,
 		MontoTransaccion:     transaccion.Monto,
 		TransaccionRealizada: true,
 		PreviamenteRealizada: false,
+		Almacenado:           true,
 		IDTransaccion:        transaccion.ID,
 		FechaTransaccion:     transaccion.Fecha.Format(formatoFecha),
 		Mensaje:              "Pago realizado exitosamente",

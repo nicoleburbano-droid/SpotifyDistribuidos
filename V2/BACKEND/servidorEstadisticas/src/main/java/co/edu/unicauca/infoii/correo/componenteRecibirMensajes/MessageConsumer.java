@@ -1,31 +1,29 @@
 package co.edu.unicauca.infoii.correo.componenteRecibirMensajes;
 
+import org.springframework.amqp.rabbit.annotation.Queue;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
 import co.edu.unicauca.infoii.correo.DTOs.CancionAlmacenarDTOInput;
-import co.edu.unicauca.infoii.correo.services.EstadisticasService;
+import co.edu.unicauca.infoii.correo.capaServicios.ServicioEstadisticas;
 
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+/** Comunicación asíncrona: consume las reproducciones que publica el servidor de streaming. */
 @Service
 public class MessageConsumer {
-    private static final Logger log = LoggerFactory.getLogger(MessageConsumer.class);
-    private final EstadisticasService estadisticasService;
 
-    public MessageConsumer(EstadisticasService estadisticasService) {
-        this.estadisticasService = estadisticasService;
+    private final ServicioEstadisticas servicio;
+
+    public MessageConsumer(ServicioEstadisticas servicio) {
+        this.servicio = servicio;
     }
 
-    @RabbitListener(queues = "notificaciones_audios")
+    @RabbitListener(queuesToDeclare = @Queue(value = "notificaciones_audios", durable = "true"))
     public void notificacionesCanciones(CancionAlmacenarDTOInput notificacion) {
-        try {
-            estadisticasService.registrarReproduccion(notificacion.getClienteId(), notificacion.getTitulo());
-            log.info("Reproducción registrada para cliente {}: {}", notificacion.getClienteId(), notificacion.getTitulo());
-        } catch (IllegalArgumentException | NullPointerException e) {
-            log.warn("Se ignoró una notificación de reproducción incompleta: {}", notificacion, e);
-        }
+        int veces = servicio.registrar(notificacion.getIdUsuario(), notificacion.getTitulo(),
+                notificacion.getTipo(), notificacion.getFecha());
+        System.out.println("[ECO] Reproducción recibida: usuario=" + notificacion.getIdUsuario()
+                + ", audio=" + notificacion.getTitulo() + " (" + notificacion.getTipo() + ")"
+                + ", veces=" + veces);
+        System.out.println("Mensaje: " + notificacion.getMensaje());
     }
 }
-    

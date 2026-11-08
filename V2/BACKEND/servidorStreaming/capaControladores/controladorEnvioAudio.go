@@ -8,7 +8,7 @@ import (
 	componenteconexioncola "servidor.local/grpc-servidor/capaFachadaServices/ComponenteConexionCola"
 	"servidor.local/grpc-servidor/capalogger"
 	pb "servidor.local/grpc-servidor/serviciosCancion"
-	"strings"
+	"time"
 )
 
 type ControladorServidor struct {
@@ -30,36 +30,40 @@ func (thisC *ControladorServidor) EnviarCancionMedianteStream(
 
 	//invocación a operación sincrona
 	direcionCliente := ObtenerDireccionCliente(stream.Context())
-	clienteID := ObtenerIDCliente(req.GetClienteId(), stream.Context())
+	//clienteID := ObtenerIDCliente(req.GetClienteId(), stream.Context())
 	//invocación a operación asincrona
 	go thisC.logger.AlmacenarSolicitud(req.Titulo, direcionCliente)
-	combined := strings.TrimSpace(req.GetTitulo())
-	formato := strings.TrimPrefix(strings.ToLower(strings.TrimSpace(req.GetFormato())), ".")
-	if formato != "" && !strings.HasSuffix(strings.ToLower(combined), "."+formato) {
-		combined += "." + formato
-	}
-	if err := capafachadaservices.StreamAudioFile(
+	combined := req.GetTitulo() + "." + req.GetFormato()
+	err := capafachadaservices.StreamAudioFile(
 		combined,
 		func(data []byte) error {
 			return stream.Send(&pb.FragmentoCancion{Data: data})
-		}); err != nil {
+		})
+	if err != nil {
 		return err
 	}
+
+	// Comunicación asíncrona: solo cuando el audio se envió completo se avisa
+	// al servidor de estadísticas, con el usuario que lo reprodujo.
 	if thisC.publisher != nil {
-		if err := thisC.publisher.PublicarNotificacion(componenteconexioncola.NotificacionCancion{ClienteID: clienteID, Titulo: req.GetTitulo(), Mensaje: "Reproducción completada desde " + direcionCliente}); err != nil {
-			log.Printf("No se pudo registrar la reproducción de %q en RabbitMQ: %v", req.GetTitulo(), err)
+		notificacion := componenteconexioncola.NotificacionCancion{
+			Titulo:    req.GetTitulo(),
+			Mensaje:   "Reproducción completada desde " + direcionCliente,
+			IdUsuario: req.GetIdUsuario(),
+			Tipo:      req.GetTipo(),
+			Fecha:     time.Now().Format(time.RFC3339),
 		}
+		go func() {
+			if errCola := thisC.publisher.PublicarNotificacion(notificacion); errCola != nil {
+				log.Printf("No se pudo notificar la reproducción de %q a RabbitMQ: %v", req.GetTitulo(), errCola)
+			}
+		}()
 	}
 	return nil
 
 }
 
-func ObtenerIDCliente(clienteID string, ctx context.Context) string {
-	if clienteID = strings.TrimSpace(clienteID); clienteID != "" {
-		return clienteID
-	}
-	return ObtenerDireccionCliente(ctx)
-}
+
 
 func ObtenerDireccionCliente(ctx context.Context) string {
 	if p, ok := peer.FromContext(ctx); ok {

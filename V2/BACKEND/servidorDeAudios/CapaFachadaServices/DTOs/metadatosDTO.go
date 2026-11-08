@@ -39,6 +39,7 @@ type MetadataPodcastDTO struct {
 }
 
 type MetadataRuidoBlancoDTO struct {
+	Titulo              string `json:"titulo"`
 	TipoSonido          string `json:"tipoSonido"`
 	FuenteAudio         string `json:"fuenteAudio"`
 	UsoSugerido         string `json:"usoSugerido"`

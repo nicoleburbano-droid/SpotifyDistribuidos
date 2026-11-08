@@ -32,7 +32,7 @@ func GetRepositorioAudios(carpetaAudios string) *RepositorioAudios {
 // archivo con el mismo nombre que el cliente le envía (el título del audio),
 // por eso el archivo se guarda con ese nombre exacto.
 func (r *RepositorioAudios) construirRuta(nombreArchivo string) string {
-	return filepath.Join(r.carpetaAudios, nombreArchivo)
+	return filepath.Join(r.carpetaAudios, nombreArchivo+".mp3")
 }
 
 // ExisteAudio indica si ya hay un audio guardado con ese nombre.
