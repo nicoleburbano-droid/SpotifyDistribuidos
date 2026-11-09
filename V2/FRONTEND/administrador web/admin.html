@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Administrador web</title>
+  <link rel="stylesheet" href="estilos.css">
+  <style>
+    .contenedor { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    form input[type=text], form input[type=number], form select { width: 100%; background: var(--superficie-2); color: var(--texto); border: 1px solid var(--borde); border-radius: 8px; padding: .45rem .65rem; }
+    fieldset { border: 1px dashed var(--borde); border-radius: 10px; padding: .4rem .9rem .6rem; margin: .4rem 0 .8rem; }
+    legend { color: var(--tenue); padding: 0 .4rem; }
+    .obligatorio::after { content: " *"; color: var(--verde); }
+    progress { width: 100%; }
+    #mensaje { margin-top: .7rem; min-height: 1.4em; }
+    @media (max-width: 820px) { .contenedor { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="encabezado">
+    <div>
+      <h1>Administrador web</h1>
+      <p>Registra audios con los metadatos propios de su tipo. Se envían al API Gateway en localhost:8081.</p>
+    </div>
+  </header>
+  <main class="contenedor">
+    <section class="panel">
+      <h2>Registrar un audio</h2>
+      <form id="formulario">
+        <label class="campo">Tipo de audio
+          <select id="tipo"></select>
+        </label>
+        <fieldset>
+          <legend id="leyenda">Metadatos</legend>
+          <div id="campos"></div>
+        </fieldset>
+        <label class="campo">Archivo de audio (.mp3)
+          <input type="file" id="archivo" accept=".mp3,audio/mpeg" required>
+        </label>
+        <progress id="progreso" max="100" value="0" hidden></progress>
+        <div class="fila"><button class="boton" type="submit" id="btnRegistrar">Registrar audio</button></div>
+        <div id="mensaje" role="status"></div>
+      </form>
+    </section>
+    <section class="panel">
+      <h2>Audios de este tipo</h2>
+      <ul id="lista" class="lista" data-vacio="Todavía no hay audios de este tipo."></ul>
+    </section>
+  </main>
+  <script src="admin.js"></script>
+</body>
+</html>
