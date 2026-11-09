@@ -8,11 +8,15 @@
 </head>
 <body>
   <header class="encabezado">
-    <div class="marca">
+    <a class="marca" href="index.html">
       <span class="logo" aria-hidden="true">●</span>
       <h1>Spotify Premium <small>Cliente de pagos</small></h1>
-    </div>
-    <div id="estado-servidor" class="estado-servidor">Consultando servidor…</div>
+    </a>
+    <nav class="navegacion" aria-label="Navegación principal">
+      <a href="index.html">Inicio</a><a href="audios.html">Audios</a>
+      <a class="actual" href="suscripciones.html">Suscripciones</a>
+    </nav>
+   
   </header>
 
   <main class="contenedor">
@@ -85,8 +89,8 @@
     </section>
   </main>
 
-  <script src="js/config.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/app.js"></script>
+  <script src="funcionesSuscripcion/config.js"></script>
+  <script src="funcionesSuscripcion/api.js"></script>
+  <script src="funcionesSuscripcion/app.js"></script>
 </body>
 </html>

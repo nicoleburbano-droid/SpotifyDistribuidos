@@ -1,13 +1,13 @@
 // cliente_receptor_fragmentos.js
 
-const { peticionDTO } = require('./stubs_generados/servicios_pb.js');
-const { AudioServicePromiseClient } = require('./stubs_generados/servicios_grpc_web_pb.js');
+const { peticionDTO } = require('../stubs_generados/servicios_pb.js');
+const { AudioServicePromiseClient } = require('../stubs_generados/servicios_grpc_web_pb.js');
 
 
 
-const ENVOY_HOST = 'http://localhost:8080';
+const API_GATEWAY_STREAMING = 'http://localhost:8081/api/streaming';
 
-const client = new AudioServicePromiseClient(ENVOY_HOST);
+const client = new AudioServicePromiseClient(API_GATEWAY_STREAMING);
 
 
 
@@ -15,6 +15,8 @@ const client = new AudioServicePromiseClient(ENVOY_HOST);
 
 let audioChunks = [];
 let idCliente = null;
+let streamActual = null;
+let urlAudioActual = null;
 
 
 
@@ -40,21 +42,26 @@ function obtenerIdCliente() {
 
 
 
-function iniciar_streaming_cancion(titulo, formato) {
+function iniciar_streaming_cancion(titulo, formato, tipo = '') {
 
     console.log("Iniciando llamada gRPC-Web a través de Envoy...");
 
     
 
+    if (streamActual && typeof streamActual.cancel === 'function') streamActual.cancel();
+    audioChunks = [];
+    _firstFragmentReceived = false;
     const request = new peticionDTO();
 
     request.setTitulo(titulo);    
 
     request.setFormato(formato);
-    request.setClienteId(obtenerIdCliente());
+    request.setIdUsuario(obtenerIdCliente());
+    request.setTipo(tipo);
 
     console.log("Solicitud preparada:", request.toObject());
     const stream = client.enviarCancionMedianteStream(request, {});
+    streamActual = stream;
 
 
 
@@ -82,6 +89,8 @@ function iniciar_streaming_cancion(titulo, formato) {
             } else {
                 console.log('Primer fragmento recibido. Reproductor mostrado.');
             }
+            const estado = document.getElementById('estado-streaming');
+            if (estado) estado.textContent = 'Audio recibido; preparando el reproductor…';
         }
 
     });
@@ -95,10 +104,13 @@ function iniciar_streaming_cancion(titulo, formato) {
         console.log('✅ Transmisión de la canción finalizada. Preparando reproducción...');
 
         // Combina todos los fragmentos en un solo Blob
-        const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' }); 
+        const mime = formato === 'wav' ? 'audio/wav' : (formato === 'm4a' ? 'audio/mp4' : 'audio/mpeg');
+        const audioBlob = new Blob(audioChunks, { type: mime });
 
         // Crea una URL de objeto para el Blob
         const audioUrl = URL.createObjectURL(audioBlob);
+        if (urlAudioActual) URL.revokeObjectURL(urlAudioActual);
+        urlAudioActual = audioUrl;
 
         // Asigna la URL al reproductor y comienza la reproducción
         if (audioPlayer) {
@@ -119,6 +131,8 @@ function iniciar_streaming_cancion(titulo, formato) {
     });
 
     stream.on('error', (err) => {
+        const estado = document.getElementById('estado-streaming');
+        if (estado) estado.textContent = `Error de streaming: ${err.message || err}`;
 
         console.error('ERROR en la comunicación gRPC-Web:', err);
 

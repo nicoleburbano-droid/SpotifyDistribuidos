@@ -1,11 +1,11 @@
 package config
 
 import (
-	"log"
+
 	"os"
-	"strconv"
+
 	"strings"
-	"time"
+
 )
 
 // Config agrupa la configuración del servidor leída desde variables de entorno.

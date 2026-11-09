@@ -36,8 +36,12 @@ h3 { font-size: .95rem; color: var(--tenue); font-weight: 600; }
   border-bottom: 1px solid var(--borde);
 }
 .marca { display: flex; align-items: center; gap: .6rem; }
+.marca { color: inherit; text-decoration: none; }
 .marca h1 { margin: 0; }
 .logo { color: var(--verde); font-size: 1.8rem; line-height: 1; }
+.navegacion { display: flex; flex-wrap: wrap; gap: .35rem; }
+.navegacion a { color: var(--tenue); text-decoration: none; padding: .55rem .8rem; border-radius: 999px; }
+.navegacion a:hover, .navegacion a.actual { color: #000; background: var(--verde); }
 
 .estado-servidor {
   font-size: .85rem; padding: .35rem .75rem; border-radius: 999px;
@@ -76,6 +80,7 @@ input:focus, select:focus { outline: 2px solid var(--verde); outline-offset: 1px
   border: none; border-radius: 999px; padding: .6rem 1.2rem;
   font-weight: 700; cursor: pointer; font-size: .9rem;
 }
+.boton:link, .boton:visited { text-decoration: none; display: inline-flex; align-items: center; }
 .boton:disabled { opacity: .45; cursor: not-allowed; }
 .boton.primario { background: var(--verde); color: #000; }
 .boton.primario:hover:not(:disabled) { background: var(--verde-oscuro); }
@@ -118,6 +123,16 @@ th { color: var(--tenue); font-weight: 600; }
 .resumen { margin: 0 0 .75rem; font-weight: 700; }
 .resumen span { color: var(--verde); }
 .texto-tenue { color: var(--tenue); }
+.mensaje { margin-top: .8rem; color: var(--tenue); }
+.error-texto { color: var(--error); }
+.audio-opcion { color: var(--texto); text-align: left; cursor: pointer; }
+.detalle-lista { display: grid; grid-template-columns: minmax(100px, max-content) 1fr; gap: .45rem .8rem; margin: 1rem 0; }
+.detalle-lista dt { color: var(--tenue); }
+.detalle-lista dd { margin: 0; overflow-wrap: anywhere; }
+.portada { padding: clamp(1.5rem, 5vw, 4rem); background: linear-gradient(135deg, #1e1e1e, #102719); border-radius: 14px; }
+.portada p { max-width: 42rem; color: var(--tenue); }
+.enlaces-inicio { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.25rem; }
+#audio-player { width: 100%; margin-top: 1rem; }
 
 @media (max-width: 560px) {
   .formulario.en-linea { grid-template-columns: 1fr; }

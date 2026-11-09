@@ -2,6 +2,16 @@ let clienteChat = null;
 let suscripcionAudio = null;
 let audioActual = "";
 
+document.addEventListener("DOMContentLoaded", () => {
+    const entrada = document.getElementById("audio-actual");
+    try {
+        audioActual = localStorage.getItem("spotify-audio-actual") || "";
+        entrada.value = audioActual;
+    } catch (_) {
+        // El título también se puede ingresar manualmente si el almacenamiento no está disponible.
+    }
+});
+
 function setConectado(conectado) {
 document.getElementById('btnConectar').disabled = conectado;
 document.getElementById('btnDesconectar') .disabled = !conectado;
@@ -71,7 +81,12 @@ function enviarReaccionServidor(event){
             alert("Selecciona primero el audio que estás escuchando");
             return;
         }
-        clienteChat.send("/app/enviarReaccion", {"content-type": "application/json"}, JSON.stringify({audioId: audioActual, reaccion}));
+        const canal = codificarAudioId(audioActual);
+        clienteChat.send(
+            `/app/enviarReaccion/${canal}`,
+            {"content-type": "application/json"},
+            JSON.stringify({tituloAudio: audioActual, reaccion})
+        );
 
     }else{
         alert("No estas conectado");
@@ -84,6 +99,11 @@ function seleccionarAudioActual() {
     if (!audioActual) {
         alert("Ingresa el ID o título del audio");
         return;
+    }
+    try {
+        localStorage.setItem("spotify-audio-actual", audioActual);
+    } catch (_) {
+        // La selección sigue funcionando aunque el almacenamiento local no esté disponible.
     }
     actualizarSuscripcionAudio();
 }

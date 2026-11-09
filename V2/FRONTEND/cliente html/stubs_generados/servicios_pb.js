@@ -99,7 +99,8 @@ proto.servicios.peticionDTO.toObject = function(includeInstance, msg) {
   var f, obj = {
 titulo: jspb.Message.getFieldWithDefault(msg, 1, ""),
 formato: jspb.Message.getFieldWithDefault(msg, 2, ""),
-clienteId: jspb.Message.getFieldWithDefault(msg, 3, "")
+idUsuario: jspb.Message.getFieldWithDefault(msg, 3, ""),
+tipo: jspb.Message.getFieldWithDefault(msg, 4, "")
   };
 
   if (includeInstance) {
@@ -146,7 +147,11 @@ proto.servicios.peticionDTO.deserializeBinaryFromReader = function(msg, reader) 
       break;
     case 3:
       var value = /** @type {string} */ (reader.readString());
-      msg.setClienteId(value);
+      msg.setIdUsuario(value);
+      break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTipo(value);
       break;
     default:
       reader.skipField();
@@ -191,13 +196,17 @@ proto.servicios.peticionDTO.serializeBinaryToWriter = function(message, writer) 
       f
     );
   }
-  f = message.getClienteId();
+    f = message.getIdUsuario();
   if (f.length > 0) {
     writer.writeString(
       3,
       f
     );
   }
+    f = message.getTipo();
+    if (f.length > 0) {
+      writer.writeString(4, f);
+    }
 };
 
 
@@ -237,10 +246,10 @@ proto.servicios.peticionDTO.prototype.setFormato = function(value) {
 };
 
 /**
- * optional string clienteId = 3;
+ * optional string id_usuario = 3;
  * @return {string}
  */
-proto.servicios.peticionDTO.prototype.getClienteId = function() {
+proto.servicios.peticionDTO.prototype.getIdUsuario = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
@@ -248,8 +257,16 @@ proto.servicios.peticionDTO.prototype.getClienteId = function() {
  * @param {string} value
  * @return {!proto.servicios.peticionDTO} returns this
  */
-proto.servicios.peticionDTO.prototype.setClienteId = function(value) {
+proto.servicios.peticionDTO.prototype.setIdUsuario = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+proto.servicios.peticionDTO.prototype.getTipo = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+proto.servicios.peticionDTO.prototype.setTipo = function(value) {
+  return jspb.Message.setProto3StringField(this, 4, value);
 };
 
 

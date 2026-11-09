@@ -1,37 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Cliente Audio gRPC-Web</title>
-    <style>
-        body { font-family: sans-serif; margin: 20px; }
-        #log { border: 1px solid #ccc; padding: 10px; height: 150px; overflow-y: scroll; margin-top: 10px; }
-        .success { color: green; }
-        .error { color: red; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spotify · Inicio</title>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <h1>Transmisión de Audio con gRPC-Web </h1>
-    <p>La conexión se intentará al servidor ubicado en localhost:8080</p>
-    <audio id="audio-player" controls style="display:none"></audio>
-
-    <div>
-        <label for="song-title">Título de la canción:</label>
-        <input id="song-title" type="text" placeholder="cancion1.mp3" value="cancion1.mp3" />
-
-        <label for="format-select">Formato:</label>
-        <select id="format-select">
-            <option value="mp3">mp3</option>
-            <option value="wav">wav</option>
-            <option value="m4a">m4a</option>
-        </select>
-    </div>
-
-    <button onclick="pedirCancion(document.getElementById('song-title').value || 'cancion1.mp3', document.getElementById('format-select').value || 'mp3')">Pedir Canción</button>
-   
-    <h3 id="status">Esperando petición...</h3>
-    <div id="log"></div>
-    <script src="./bundle.js"></script>
-    <script src="./funciones.js"></script>
-    
+  <header class="encabezado">
+    <a class="marca" href="index.html"><span class="logo" aria-hidden="true">●</span><h1>Spotify <small>Distribuido</small></h1></a>
+    <nav class="navegacion" aria-label="Navegación principal">
+      <a class="actual" href="index.html">Inicio</a><a href="audios.html">Audios</a>
+      <a href="suscripciones.html">Suscripciones</a>
+    </nav>
+  </header>
+  <main class="contenedor">
+    <section class="portada">
+      <h2>Tu música, conectada</h2>
+      <p>Explora el catálogo, reproduce audios por streaming, comparte reacciones en tiempo real y consulta tus planes.</p>
+      <div class="enlaces-inicio">
+        <a class="boton primario" href="audios.html">Explorar audios</a>
+        <a class="boton secundario" href="suscripciones.html">Ver suscripciones</a>
+      </div>
+    </section>
+  </main>
 </body>
 </html>

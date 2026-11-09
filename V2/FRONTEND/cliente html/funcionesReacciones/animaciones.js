@@ -1,4 +1,4 @@
-const icons = document.querySelectorAll('#reactions i');
+const icons = document.querySelectorAll('#reacciones i');
 
 icons.forEach(icon => {
   icon.addEventListener('click', () => {

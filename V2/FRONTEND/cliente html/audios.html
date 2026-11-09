@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spotify · Explorar audios</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <header class="encabezado">
+    <a class="marca" href="index.html"><span class="logo" aria-hidden="true">●</span><h1>Spotify <small>Distribuido</small></h1></a>
+    <nav class="navegacion" aria-label="Navegación principal">
+      <a href="index.html">Inicio</a><a class="actual" href="audios.html">Audios</a>
+      <a href="suscripciones.html">Suscripciones</a>
+    </nav>
+  </header>
+  <main class="contenedor">
+    <section class="panel">
+      <h2>Explorar catálogo</h2>
+      <p class="texto-tenue">Elige un tipo de audio para consultar el catálogo disponible.</p>
+      <label for="tipo-audio">Tipo de audio</label>
+      <select id="tipo-audio"><option value="">Cargando tipos…</option></select>
+      <div id="estado-audios" class="mensaje" role="status" aria-live="polite">Cargando tipos de audio…</div>
+    </section>
+    <div class="columnas">
+      <section class="panel">
+        <h2>Audios</h2>
+        <div id="lista-audios" class="tarjetas"><p class="texto-tenue">Selecciona un tipo.</p></div>
+      </section>
+      <section class="panel">
+        <h2>Detalles y reproducción</h2>
+        <div id="detalle-audio" class="texto-tenue">Selecciona un audio para consultar sus detalles.</div>
+        <button id="btn-reproducir" class="boton primario" type="button" disabled>Reproducir por streaming</button>
+        <p id="estado-streaming" class="texto-tenue" role="status" aria-live="polite"></p>
+        <audio id="audio-player" controls preload="none" hidden></audio>
+      </section>
+    </div>
+
+
+
+    <section class="panel">
+      <h2>Reacciones en tiempo real</h2>
+      <p class="texto-tenue">Conéctate y usa el mismo título de audio que los demás oyentes para compartir reacciones.</p>
+      <div class="acciones-reacciones">
+        <button id="btnConectar" class="boton primario" type="button" onclick="conectar()">Conectar</button>
+        <button id="btnDesconectar" class="boton secundario" type="button" onclick="desconectar()" disabled>Desconectar</button>
+        <a href="audios.html">Explorar audios</a>
+      </div>
+      <label for="audio-actual">Audio que estás escuchando</label>
+      <input id="audio-actual" type="text" placeholder="Título exacto del audio">
+      <button id="btnSeleccionarAudio" class="boton secundario" type="button" onclick="seleccionarAudioActual()">Seleccionar audio</button>
+      <div id="reacciones" aria-label="Enviar reacción">
+        <i class="fa-solid fa-thumbs-up reaction icon-like" data-reaction="like" role="button" tabindex="0" aria-label="Me gusta" onclick="enviarReaccionServidor(event)"></i>
+        <i class="fa-solid fa-heart reaction icon-heart" data-reaction="heart" role="button" tabindex="0" aria-label="Me encanta" onclick="enviarReaccionServidor(event)"></i>
+        <i class="fa-solid fa-face-sad-tear reaction icon-sad" data-reaction="sad" role="button" tabindex="0" aria-label="Triste" onclick="enviarReaccionServidor(event)"></i>
+        <i class="fa-solid fa-face-laugh reaction icon-fun" data-reaction="fun" role="button" tabindex="0" aria-label="Divertido" onclick="enviarReaccionServidor(event)"></i>
+      </div>
+    </section>
+    <section class="panel">
+      <h2>Reacciones recibidas</h2>
+      <div id="mensajes" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="funcionesStreaming/bundle.js"></script>
+  <script src="funcionesStreaming/funciones.js"></script>
+  <script src="funcionesAudios/funcionesMetadatos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js" defer></script>
+  <script src="funcionesReacciones/animaciones.js" defer></script>
+  <script src="funcionesReacciones/funciones.js" defer></script>
+
+</body>
+</html>

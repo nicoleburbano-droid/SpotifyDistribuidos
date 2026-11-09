@@ -9,7 +9,7 @@ import (
 
 func StreamAudioFile(tituloCancion string, funcionParaEnviarFragmento func([]byte) error) error {
 	log.Printf("Canción solicitada: %s", tituloCancion)
-	file, err := os.Open("canciones/" + tituloCancion)
+	file, err := os.Open("../canciones/" + tituloCancion)
 	if err != nil {
 		return fmt.Errorf("no se pudo abrir el archivo: %w", err)
 	}
