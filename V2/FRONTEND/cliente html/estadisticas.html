@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spotify · Estadísticas</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="encabezado">
+    <a class="marca" href="index.html">
+      <span class="logo" aria-hidden="true">●</span>
+      <h1>Spotify <small>Estadísticas</small></h1>
+    </a>
+    <nav class="navegacion" aria-label="Navegación principal">
+      <a href="index.html">Inicio</a>
+      <a href="audios.html">Audios</a>
+      <a href="suscripciones.html">Suscripciones</a>
+      <a class="actual" href="estadisticas.html">Estadísticas</a>
+    </nav>
+  </header>
+
+  <main class="contenedor">
+    <section class="panel">
+      <h2>Historial de reproducciones</h2>
+      <p class="texto-tenue">Consulta los audios reproducidos y cuántas veces los escuchaste.</p>
+      <form id="form-estadistica" class="formulario en-linea">
+        <label for="id-usuario">ID del usuario
+          <input id="id-usuario" name="id-usuario" type="text" autocomplete="off" required>
+        </label>
+        <button id="btn-consultar-estadisticas" class="boton primario" type="submit">Consultar historial</button>
+      </form>
+      <p id="estado-estadisticas" class="mensaje" role="status" aria-live="polite">El ID se completa con el cliente usado para reproducir audios.</p>
+      <div class="tabla-contenedor">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Audio</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Reproducciones</th>
+              <th scope="col">Última reproducción</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-historial"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script src="funcionesEstadisticas/funcionesEstadisticas.js"></script>
+</body>
+</html>

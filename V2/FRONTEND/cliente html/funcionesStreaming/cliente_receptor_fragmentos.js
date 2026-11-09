@@ -29,10 +29,10 @@ function obtenerIdCliente() {
     if (idCliente) return idCliente;
     const clave = 'spotify-client-id';
     try {
-        idCliente = localStorage.getItem(clave);
+        idCliente = sessionStorage.getItem(clave);
         if (!idCliente) {
             idCliente = `web-${window.crypto?.randomUUID?.() || Math.random().toString(36).slice(2)}`;
-            localStorage.setItem(clave, idCliente);
+            sessionStorage.setItem(clave, idCliente);
         }
     } catch (error) {
         idCliente = `web-${Math.random().toString(36).slice(2)}`;

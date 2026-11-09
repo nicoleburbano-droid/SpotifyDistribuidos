@@ -30,22 +30,7 @@ function el(etiqueta, atributos = {}, hijos = []) {
   return nodo;
 }
 
-// ---------------------------------------------------------------- Estado del servidor
 
-async function cargarEstadoServidor() {
-  const indicador = $("estado-servidor");
-  try {
-    const datos = await Api.estado();
-    indicador.className = "estado-servidor activo";
-    indicador.textContent =
-      datos.modo_fallo === "NINGUNO"
-        ? "Servidor activo · sin simulación de fallos"
-        : `Servidor activo · simulando pérdida de ${datos.modo_fallo} (${datos.cantidad_fallos} fallos por token)`;
-  } catch {
-    indicador.className = "estado-servidor caido";
-    indicador.textContent = "Servidor no disponible";
-  }
-}
 
 // ---------------------------------------------------------------- Suscripciones
 
@@ -318,7 +303,6 @@ document.addEventListener("DOMContentLoaded", () => {
   $("form-consulta").addEventListener("submit", consultarTransacciones);
   $("suscripcion").addEventListener("change", (e) => seleccionarSuscripcion(e.target.value, false));
   $("btn-recargar-suscripciones").addEventListener("click", () => {
-    cargarEstadoServidor();
     cargarSuscripciones();
   });
   $("btn-reenviar").addEventListener("click", () => {
@@ -327,6 +311,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   mostrarUltimoPago();
-  cargarEstadoServidor();
   cargarSuscripciones();
 });
